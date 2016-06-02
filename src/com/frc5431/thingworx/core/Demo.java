@@ -30,7 +30,7 @@ public class Demo {
 			final JumboLayer l = new JumboLayer();
 
 			l.addEntity(new RobotObject());
-			l.addEntity(new JumboTextBox(new Rectangle(0, 0, 720, 100), new JumboText("<#FFFFFF>HI")));
+			l.addEntity(new JumboTextBox(new Rectangle(0, 0, 720, 100), new JumboText("<#FFFFFFi1>DEMO")));
 
 			final JumboScene s = new JumboScene(l);
 			Jumbo.setScene(s);

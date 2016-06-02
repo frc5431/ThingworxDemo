@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.Util;
 import org.lwjgl.util.vector.Matrix4f;
 
 public class ShaderProgram {
@@ -108,16 +109,19 @@ public class ShaderProgram {
 
 	public void createUniform(String uniformName) throws Exception {
 		int uniformLocation = GL20.glGetUniformLocation(programId, uniformName);
+		Util.checkGLError();
 		if (uniformLocation < 0) {
 			throw new Exception("Could not find uniform:" + uniformName);
 		}
 		uniforms.put(uniformName, uniformLocation);
 	}
 
-	public void setUniform(String uniformName, Matrix4f value) {
+	public void setUniform(String uniformName, Matrix4f worldMatrix) {
 		final FloatBuffer fb = BufferUtils.createFloatBuffer(16);
-		value.store(fb);
+		worldMatrix.store(fb);
 		fb.flip();
 		GL20.glUniformMatrix4(uniforms.get(uniformName), false, fb);
+		Util.checkGLError();
+
 	}
 }

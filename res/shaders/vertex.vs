@@ -1,10 +1,11 @@
 #version 330
 
-layout (location=0) in vec4 position;
+layout (location=0) in vec3 position;
 uniform mat4 projectionMatrix;
+uniform mat4 worldMatrix;
 
 
 void main()
 {
-    gl_Position = projectionMatrix*position;
+    gl_Position = projectionMatrix*worldMatrix*vec4(position,1.0);
 }

@@ -5,16 +5,8 @@
   <version>0.0.1-SNAPSHOT</version>
   
   <dependencies>
-  <dependency>
-            <groupId>org.joml</groupId>
-            <artifactId>joml</artifactId>
-            <version>${joml.version}</version>
-        </dependency>
   </dependencies>
-  
-      <properties>
-        <joml.version>1.7.1</joml.version>
-    </properties>
+
   
   <build>
     <sourceDirectory>src</sourceDirectory>

@@ -23,28 +23,28 @@ import java.io.File;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Matrix4f;
 
-import com.jumbo.core.Jumbo;
 import com.jumbo.core.JumboGraphicsObject;
 import com.jumbo.core.JumboRenderMode;
+import com.jumbo.tools.calculations.JumboMathHandler;
 import com.jumbo.tools.loaders.JumboStringHandler;
 
 public class ThreeDimRenderer extends JumboRenderMode {
 	float depth = -0.5f;
 
-	float[] vertices = new float[] { 0, 0, depth, 0, 0.5f, depth, 0.5f, 0.0f, depth };
+	float[] vertices = new float[] { -1.0f, -1.0f, depth, -1.0f, 1.0f, depth, 1.0f, -1.0f, depth };
 	int[] indices = new int[] { 0, 1, 2, 0 };
 
 	int vboId, vaoId, idxVboId;
 
-	private static final float FOV = (float) Math.toRadians(60.0f);
+	private static final float FOV = 70;
 
 	private static final float Z_NEAR = 0.01f;
 
-	private static final float Z_FAR = 1000.f;
+	private static final float Z_FAR = 1000.0f;
 
 	private Matrix4f projectionMatrix;
 
@@ -56,6 +56,9 @@ public class ThreeDimRenderer extends JumboRenderMode {
 		prog.createFragmentShader(JumboStringHandler.loadAsString(System.getProperty("user.dir") + File.separator
 				+ "res" + File.separator + "shaders" + File.separator + "fragment.fs"));
 		prog.link();
+
+		prog.createUniform("projectionMatrix");
+		prog.setUniform("projectionMatrix", JumboMathHandler.createProjectionMatrix(FOV, Z_NEAR, Z_FAR));
 
 		FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
 		verticesBuffer.put(vertices).flip();
@@ -81,11 +84,11 @@ public class ThreeDimRenderer extends JumboRenderMode {
 		// Unbind the VAO
 		glBindVertexArray(0);
 
-		float aspectRatio = (float) Jumbo.getFrameWidth() / Jumbo.getFrameHeight();
-		projectionMatrix = new Matrix4f().perspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
-
-		prog.createUniform("projectionMatrix");
-		prog.setUniform("projectionMatrix", projectionMatrix);
+		// float aspectRatio = (float) Jumbo.getFrameWidth() /
+		// Jumbo.getFrameHeight();
+		// projectionMatrix = new Matrix4f().perspective(FOV, aspectRatio,
+		// Z_NEAR, Z_FAR);
+		//
 
 	}
 
@@ -121,12 +124,12 @@ public class ThreeDimRenderer extends JumboRenderMode {
 	 */
 	@Override
 	public void prepare() {
-
 	}
 
 	@Override
 	public void init() {
 		// GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_CULL_FACE);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}

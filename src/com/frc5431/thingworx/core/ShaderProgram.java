@@ -23,9 +23,9 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.util.vector.Matrix4f;
 
 public class ShaderProgram {
 
@@ -115,9 +115,9 @@ public class ShaderProgram {
 	}
 
 	public void setUniform(String uniformName, Matrix4f value) {
-		// Dump the matrix into a float buffer
-		FloatBuffer fb = BufferUtils.createFloatBuffer(16);
-		value.get(fb);
+		final FloatBuffer fb = BufferUtils.createFloatBuffer(16);
+		value.store(fb);
+		fb.flip();
 		GL20.glUniformMatrix4(uniforms.get(uniformName), false, fb);
 	}
 }

@@ -49,7 +49,7 @@ public class ThreeDimRenderer extends JumboRenderMode {
 
 	private static final float Z_FAR = 1000.0f;
 
-	private Vector3f offset = new Vector3f(0, 0, 0), rotation = new Vector3f(0, 0, 0);
+	private Vector3f offset = new Vector3f(0, 0, 1000), rotation = new Vector3f(0, 0, 0);
 
 	public ThreeDimRenderer() throws Exception {
 
@@ -71,11 +71,16 @@ public class ThreeDimRenderer extends JumboRenderMode {
 
 		RobotModelData.init();
 
-		FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(RobotModelData.vertices.size() * 3);
-		// verticesBuffer.put(vertices).flip();
+		// IntBuffer indicesBuffer =
+		// BufferUtils.createIntBuffer(indices.length);
+		// FloatBuffer verticesBuffer =
+		// BufferUtils.createFloatBuffer(vertices.length);
+		// verticesBuffer.put(vertices);
+		//
+		// indicesBuffer.put(indices);
 
 		IntBuffer indicesBuffer = BufferUtils.createIntBuffer(RobotModelData.faces.size() * 3);
-		// indicesBuffer.put(indices).flip();
+		FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(RobotModelData.vertices.size() * 3);
 
 		for (Vector3f v : RobotModelData.vertices) {
 			verticesBuffer.put(new float[] { v.x, v.y, v.z });
@@ -127,7 +132,7 @@ public class ThreeDimRenderer extends JumboRenderMode {
 	@Override
 	public void render(JumboGraphicsObject e, int renderwidth, int renderheight) {
 
-		GL11.glDrawElements(GL_TRIANGLES, indices.length, GL11.GL_UNSIGNED_INT, 0);
+		GL11.glDrawElements(GL_TRIANGLES, RobotModelData.vertices.size() * 3, GL11.GL_UNSIGNED_INT, 0);
 
 		glDisableVertexAttribArray(0);
 		glBindVertexArray(0);
@@ -149,18 +154,18 @@ public class ThreeDimRenderer extends JumboRenderMode {
 		glBindVertexArray(vaoId);
 		glEnableVertexAttribArray(0);
 
-		final float MOVE_SPEED = 0.1f;
+		final float MOVE_SPEED = 10.0f;
 
-		if (JumboInputHandler.isKeyDown(JumboKey.A)) {
+		if (JumboInputHandler.isKeyDown(JumboKey.D)) {
 			offset.setX(offset.getX() - MOVE_SPEED);
 		}
-		if (JumboInputHandler.isKeyDown(JumboKey.D)) {
+		if (JumboInputHandler.isKeyDown(JumboKey.A)) {
 			offset.setX(offset.getX() + MOVE_SPEED);
 		}
-		if (JumboInputHandler.isKeyDown(JumboKey.S)) {
+		if (JumboInputHandler.isKeyDown(JumboKey.W)) {
 			offset.setY(offset.getY() - MOVE_SPEED);
 		}
-		if (JumboInputHandler.isKeyDown(JumboKey.W)) {
+		if (JumboInputHandler.isKeyDown(JumboKey.S)) {
 			offset.setY(offset.getY() + MOVE_SPEED);
 		}
 		if (JumboInputHandler.isKeyDown(JumboKey.Q)) {

@@ -28,6 +28,10 @@ public class RobotData {
 		yaccel = 0.0,
 		zaccel = 0.0,
 		choppers = 0.0,
+		ballIn = 0.0,
+		intake = 0.0,
+		towerdistance = 0.0,
+		fromcenter = 0.0,
 		auton = 0.0,
 		teleop = 0.0,
 		enabled = 0.0;
@@ -104,9 +108,13 @@ public class RobotData {
 				                   " RDISTANCE        DOUBLE	  NOT NULL," + 
 				                   " LEFTDRIVEPOWER        DOUBLE	  NOT NULL," + 
 				                   " RIGHTDRIVEPOWER        DOUBLE	  NOT NULL," + 
+				                   " INTAKE        DOUBLE	  NOT NULL," + 
+				                   " TOWERDISTANCE        DOUBLE	  NOT NULL," + 
+				                   " FROMCENTER        DOUBLE	  NOT NULL," + 
 				                   " CHOPPERS        DOUBLE	  NOT NULL," + 
 				                   " AUTON        BOOLEAN	  NOT NULL," + 
 				                   " TELEOP       BOOLEAN	  NOT NULL," + 
+				                   " BALLIN       BOOLEAN	  NOT NULL," + 
 				                   " ENABLED        DOUBLE	  NOT NULL)"; 
 				      stmt.executeUpdate(sql);
 				      stmt.close();
@@ -136,12 +144,16 @@ public class RobotData {
 			auton = JD(got, "auton");
 			teleop = JD(got, "teleop");
 			enabled = JD(got, "enabled");
+			ballIn = JD(got, "ballIn");
+			intake = JD(got, "intake");
+			towerdistance = JD(got, "towerdistance");
+			fromcenter = JD(got, "fromcenter");
 		      stmt = conn.createStatement();
-		      String sql = String.format("INSERT INTO ROBOTDATA (ID,TIMESTAMP,XANGLE,YANGLE,ZANGLE,XACCEL,YACCEL,ZACCEL,LEFTRPM,RIGHTRPM,LDISTANCE,RDISTANCE,LEFTDRIVEPOWER,RIGHTDRIVEPOWER,CHOPPERS,AUTON,TELEOP,ENABLED) " +
-		                   "VALUES (%d, '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s );", currentRow, timestamp, fmt(xangle),
+		      String sql = String.format("INSERT INTO ROBOTDATA (ID,TIMESTAMP,XANGLE,YANGLE,ZANGLE,XACCEL,YACCEL,ZACCEL,LEFTRPM,RIGHTRPM,LDISTANCE,RDISTANCE,LEFTDRIVEPOWER,RIGHTDRIVEPOWER,INTAKE,TOWERDISTANCE,FROMCENTER,CHOPPERS,AUTON,TELEOP,BALLIN,ENABLED) " +
+		                   "VALUES (%d, '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s );", currentRow, timestamp, fmt(xangle),
 		                   fmt(yangle), fmt(zangle), fmt(xaccel), fmt(yaccel), fmt(zaccel), fmt(leftrpm), fmt(rightrpm), 
-		                   fmt(ldistance), fmt(rdistance), fmt(leftdrivepower), fmt(rightdrivepower), fmt(choppers), 
-		                   fmt(auton), fmt(teleop), fmt(enabled)); 
+		                   fmt(ldistance), fmt(rdistance), fmt(leftdrivepower), fmt(rightdrivepower), fmt(intake), fmt(towerdistance),fmt(fromcenter), fmt(choppers), 
+		                   fmt(auton), fmt(teleop), fmt(ballIn), fmt(enabled)); 
 		      stmt.executeUpdate(sql);
 		      stmt.close();
 		      conn.commit();
@@ -178,7 +190,11 @@ public class RobotData {
 				auton = JD(got, "auton");
 				teleop = JD(got, "teleop");
 				enabled = JD(got, "enabled");
-				System.out.println("Updated values from DataBase");
+				ballIn = JD(got, "ballIn");
+				intake = JD(got, "intake");
+				towerdistance = JD(got, "towerdistance");
+				fromcenter = JD(got, "fromcenter");
+				//System.out.println("Updated values from DataBase");
 			}
 		} catch(Exception readDBError) {
 			readDBError.printStackTrace();
@@ -234,6 +250,18 @@ public class RobotData {
 		return current;
 	}
 	
+	public static int getIntake() {
+		return (int) intake;
+	}
+	
+	public static double getTowerDistance() {
+		return towerdistance;
+	}
+	
+	public static double getFromCenter() {
+		return fromcenter;
+	}
+	
 	public static boolean getChopperState() {
 		return (choppers > 0.9);
 	}
@@ -248,5 +276,9 @@ public class RobotData {
 	
 	public static boolean isEnabled() {
 		return (enabled > 0.9);
+	}
+	
+	public static boolean isBallIn() {
+		return (ballIn > 0.9);
 	}
 }

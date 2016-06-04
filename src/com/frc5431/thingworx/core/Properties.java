@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 
 import org.lwjgl.util.vector.Vector4f;
 
+import com.jumbo.core.Jumbo;
 import com.jumbo.tools.input.JumboInputHandler;
 import com.jumbo.tools.input.JumboKey;
 
@@ -20,7 +21,23 @@ public class Properties {
 		properties.put("intake", new Property(0));
 		properties.put("rDrive", new Property(0.0f));
 		properties.put("lDrive", new Property(0.0f));
+		properties.put("leftDistance", new Property(0.0f));
+		properties.put("rightDistance", new Property(0.0f));
+		properties.put("driveAverage", new Property(0.0f));
+		properties.put("choppers", new Property(false));
+		properties.put("auton", new Property(false));
+		properties.put("teleop", new Property(false));
+		properties.put("enabled", new Property(false));
+		properties.put("gyro", new Property((new double[] {0, 0, 0})));
+		properties.put("accel", new Property((new double[] {0, 0, 0})));
+		properties.put("towerdistance", new Property(0.0f));
+		properties.put("fromcenter", new Property(0.0f));
 
+		Jumbo.setCloseListener(() -> {
+			System.out.println("Commiting changes and closing database!");
+			RobotData.closeDB();
+		}); //Straight to my thighs choo choo
+		
 		final Executor exe = Executors.newSingleThreadExecutor();
 		exe.execute(() -> {
 			while (true) {
@@ -32,14 +49,27 @@ public class Properties {
 				boolean isAuto = RobotData.isAuton(), isTeleop = RobotData.isTeleop(),
 						isEnabled = RobotData.isEnabled(), chopperState = RobotData.getChopperState();
 
+				properties.get("rDrive").setValue((float) drive[0]);
+				properties.get("lDrive").setValue((float) drive[1]);
+				properties.get("leftDistance").setValue((float) distances[0]);
+				properties.get("rightDistance").setValue((float) distances[1]);
+				properties.get("driveAverage").setValue((float) distances[2]);
+				properties.get("flywheelRPM").setValue((int) ((flyRPM[0] + flyRPM[1]) / 2));
+				properties.get("choppers").setValue((boolean) chopperState);
+				properties.get("auton").setValue((boolean) isAuto);
+				properties.get("teleop").setValue((boolean) isTeleop);
+				properties.get("enabled").setValue((boolean) isEnabled);
+				properties.get("gyro").setValue(gyro);
+				properties.get("accel").setValue(accel);
+				properties.get("ballIn").setValue((boolean)RobotData.isBallIn());
+				properties.get("intake").setValue((int)RobotData.getIntake());
+				properties.get("towerdistance").setValue((float)RobotData.getTowerDistance());
+				properties.get("fromcenter").setValue((float)RobotData.getFromCenter());
+				
 				if (RobotData.isUpdating()) { // Timestamp checker
-					System.out.println("ROBOT IS ON AND UPDATING!!");
+					//System.out.println("ROBOT IS ON AND UPDATING!!");
 
-					properties.get("rDrive").setValue((float) drive[0]);
-					properties.get("lDrive").setValue((float) drive[1]);
-					properties.get("flywheelRPM").setValue((int) ((flyRPM[0] + flyRPM[1]) / 2));
-
-					// DO CRAP
+					// DO CRAP (NOT YET THERE IS A BUG)
 				} else {
 					Date currentStamp = RobotData.getTimeStamp();
 					if (currentStamp != null) {

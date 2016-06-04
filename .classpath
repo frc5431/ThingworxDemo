@@ -18,8 +18,16 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="jars/sqlite-jdbc.jar"/>
 	<classpathentry kind="lib" path="jars"/>
-	<classpathentry kind="lib" path="jars/lwjgl_util.jar"/>
-	<classpathentry kind="lib" path="jars/lwjgl.jar"/>
+	<classpathentry kind="lib" path="jars/lwjgl_util.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="ThingworxDemo/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jars/lwjgl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="ThingworxDemo/natives"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="jars/slick-util.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

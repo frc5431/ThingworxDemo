@@ -161,7 +161,7 @@ public class RenderMode3D extends JumboRenderMode {
 		GL11.glDrawElements(GL_TRIANGLES, flywheels.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
 
 		if ((boolean) Properties.properties.get("ballIn").getValue()) {
-			prog.setUniform("color", new Vector4f(1, 0.5f, 0, 1));
+			prog.setUniform("color", new Vector4f(0, 0, 0.5f, 1));
 			glBindVertexArray(ball.getVaoID());
 			glEnableVertexAttribArray(0);
 			glEnableVertexAttribArray(2);

@@ -8,9 +8,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
 
-import json.Json;
-import json.JsonArray;
-import json.JsonObject;
+import com.frc5431.thingworx.json.Json;
+import com.frc5431.thingworx.json.JsonArray;
+import com.frc5431.thingworx.json.JsonObject;
 
 public class ThingWorx {
 

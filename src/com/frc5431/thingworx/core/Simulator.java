@@ -2,7 +2,12 @@ package com.frc5431.thingworx.core;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
+
+import javax.imageio.ImageIO;
 
 import com.jumbo.components.FloatRectangle;
 import com.jumbo.components.JumboColor;
@@ -24,7 +29,7 @@ import com.jumbo.tools.JumboSettings;
 public class Simulator {
 	static int MODE_ID;
 
-	public static void main(String... args) {
+	public static void main(String... args) throws IOException {
 		JumboSettings.fps = 60;
 		JumboSettings.logerrors = false;
 		JumboSettings.tickdelay = 100;
@@ -93,7 +98,7 @@ public class Simulator {
 			Jumbo.setScene(s);
 		});
 		final JumboLaunchConfig launch = new JumboLaunchConfig("FRC 5431", new Dimension(720, 480),
-				"res/fonts/verdana");
+				new BufferedImage[] { ImageIO.read(new File("res/assets/logo.png")) }, "res/fonts/verdana");
 		launch.resizable = true;
 		Jumbo.start(launch);
 	}

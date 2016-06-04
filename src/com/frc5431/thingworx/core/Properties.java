@@ -3,6 +3,8 @@ package com.frc5431.thingworx.core;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import org.lwjgl.util.vector.Vector4f;
 
@@ -10,7 +12,7 @@ import com.jumbo.tools.input.JumboInputHandler;
 import com.jumbo.tools.input.JumboKey;
 
 public class Properties {
-	public static Map<String, Property> properties = new HashMap<>();;
+	public static Map<String, Property> properties = new HashMap<>();
 
 	static {
 		properties.put("ballIn", new Property(false));
@@ -18,6 +20,63 @@ public class Properties {
 		properties.put("intake", new Property(0));
 		properties.put("rDrive", new Property(0.0f));
 		properties.put("lDrive", new Property(0.0f));
+
+		final Executor exe = Executors.newSingleThreadExecutor();
+		exe.execute(() -> {
+			while (true) {
+				RobotData.tick(); // Update database
+				final double[] drive = RobotData.getRobotDrive(), flyRPM = RobotData.getRobotFlyWheel(),
+						distances = RobotData.getRobotDistance(), gyro = RobotData.getRobotGyro(),
+						accel = RobotData.getRobotAccel();
+
+				boolean isAuto = RobotData.isAuton(), isTeleop = RobotData.isTeleop(),
+						isEnabled = RobotData.isEnabled(), chopperState = RobotData.getChopperState();
+
+				if (RobotData.isUpdating()) { // Timestamp checker
+					System.out.println("ROBOT IS ON AND UPDATING!!");
+
+					properties.get("rDrive").setValue((float) drive[0]);
+					properties.get("lDrive").setValue((float) drive[1]);
+					properties.get("flywheelRPM").setValue((int) ((flyRPM[0] + flyRPM[1]) / 2));
+
+					// DO CRAP
+				} else {
+					Date currentStamp = RobotData.getTimeStamp();
+					if (currentStamp != null) {
+						System.out.println("Last (NEW) OKAY pull was at " + currentStamp.toString());
+					}
+				}
+
+				/*
+				 * LIAV THIS IS HOW TO DO A REPLAY EXAMPLE
+				 */
+				boolean replay = true;
+				if (replay) {
+					RobotData.updateByDB(1);
+					Date lastStamp = RobotData.getTimeStamp();
+					// Do initial stuff here such as camera angle and what not
+
+					for (int stamp = 2; stamp < RobotData.getCommits(); stamp++) {
+						RobotData.updateByDB(stamp);
+						double delayBetweenUpdate = RobotData.getTimeStamp().getTime() - lastStamp.getTime();
+						final double[] driveDB = RobotData.getRobotDrive(), flyRPMDB = RobotData.getRobotFlyWheel(),
+								distancesDB = RobotData.getRobotDistance(), gyroDB = RobotData.getRobotGyro(),
+								accelDB = RobotData.getRobotAccel();
+
+						boolean isAutoDB = RobotData.isAuton(), isTeleopDB = RobotData.isTeleop(),
+								isEnabledDB = RobotData.isEnabled(), chopperStateDB = RobotData.getChopperState();
+					}
+				}
+
+				boolean closeDatabase = false; // YOU MUST CLOSE BY THE END OF
+												// THE
+												// PROGRAM
+				if (closeDatabase) {
+					RobotData.closeDB();
+				}
+			}
+
+		});
 	}
 
 	public static final int maxFlywheel = 4500;
@@ -31,67 +90,7 @@ public class Properties {
 	public static final boolean CHEAT_MODE = true;
 
 	public static void update() {
-		RobotData.tick(); //Update database
-		final double[] drive = RobotData.getRobotDrive(),
-						flyRPM = RobotData.getRobotFlyWheel(),
-						distances = RobotData.getRobotDistance(),
-						gyro = RobotData.getRobotGyro(),
-						accel = RobotData.getRobotAccel();
 
-		boolean isAuto = RobotData.isAuton(),
-				isTeleop = RobotData.isTeleop(),
-				isEnabled = RobotData.isEnabled(),
-				chopperState = RobotData.getChopperState();
-		
-		if(RobotData.isUpdating()) { //Timestamp checker
-			System.out.println("ROBOT IS ON AND UPDATING!!");
-			
-			//DO CRAP
-		} else {
-			Date currentStamp = RobotData.getTimeStamp();
-			System.out.println("Last (NEW) OKAY pull was at " + currentStamp.toString());
-		}
-		
-		/*
-		 * LIAV THIS IS HOW TO DO A REPLAY
-		 * EXAMPLE
-		 */
-		boolean replay = false;
-		if(replay) {
-			RobotData.updateByDB(1);
-			Date lastStamp = RobotData.getTimeStamp();
-			//Do initial stuff here such as camera angle and what not
-			
-			
-			for(int stamp = 2; stamp < RobotData.getCommits(); stamp++) {
-				RobotData.updateByDB(stamp);
-				double delayBetweenUpdate = RobotData.getTimeStamp().getTime() - lastStamp.getTime();
-				final double[] driveDB = RobotData.getRobotDrive(),
-						flyRPMDB = RobotData.getRobotFlyWheel(),
-						distancesDB = RobotData.getRobotDistance(),
-						gyroDB = RobotData.getRobotGyro(),
-						accelDB = RobotData.getRobotAccel();
-
-				boolean isAutoDB = RobotData.isAuton(),
-						isTeleopDB = RobotData.isTeleop(),
-						isEnabledDB = RobotData.isEnabled(),
-						chopperStateDB = RobotData.getChopperState();
-			}
-		}
-		
-		boolean closeDatabase = false; //YOU MUST CLOSE BY THE END OF THE PROGRAM
-		if(closeDatabase) {
-			RobotData.closeDB();
-		}
-		
-		properties.get("rDrive").setValue(drive[0]);
-		properties.get("lDrive").setValue(drive[1]);
-		properties.get("flywheelRPM").setValue(((flyRPM[0] + flyRPM[1])/2));
-		
-		
-		
-		
-		
 		if (CHEAT_MODE) {
 			if (JumboInputHandler.isKeyDown(JumboKey.ONE)) {
 				if ((float) properties.get("rDrive").getValue() < 1) {

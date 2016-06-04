@@ -225,9 +225,6 @@ public class RenderMode3D extends JumboRenderMode {
 
 		prog.setUniform("viewMatrix", worldMatrix);
 		prog.setUniform("color", new Vector4f(1, 1, 1, 1));
-
-		System.out.println(worldMatrix + " ");
-
 		Properties.update();
 	}
 

@@ -138,11 +138,15 @@ public class Simulator {
 																			// reason
 			value.array.add(background);
 
-			final JumboTextBox title = new JumboTextBox(new Rectangle(0, 20, 200, 30),
+			final JumboImage bevel = new JumboImage(new JumboTexture(new JumboColor(0.5f, 0.5f, 0.5f)),
+					new Rectangle(5, 5, 190, 40));
+			value.array.add(bevel);
+
+			final JumboTextBox title = new JumboTextBox(new Rectangle(0, 15, 200, 30),
 					new JumboText("<s32#FFFFFFi1>" + key));
 			value.array.add(title);
 
-			final JumboTextBox valueText = new JumboTextBox(new Rectangle(0, 0, 200, 20), new JumboText("Loading..."));
+			final JumboTextBox valueText = new JumboTextBox(new Rectangle(0, 0, 200, 15), new JumboText("Loading..."));
 			valueText.setCustomRenderAction(() -> {
 				valueText.setText("<s24#FFFFFFi0>" + p.getValue());
 			});

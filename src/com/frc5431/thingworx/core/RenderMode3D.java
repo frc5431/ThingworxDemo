@@ -66,7 +66,7 @@ public class RenderMode3D extends JumboRenderMode {
 		prog.createUniform("lightPosition");
 		prog.createUniform("lightColor");
 
-		prog.setUniform("lightPosition", new Vector3f(0.6f, -1.8f, -44.5f));
+		prog.setUniform("lightPosition", new Vector3f(0.6f, 43f, -6f));
 		prog.setUniform("lightColor", new Vector3f(1, 1, 1));
 		prog.createUniform("viewMatrix");
 
@@ -225,6 +225,8 @@ public class RenderMode3D extends JumboRenderMode {
 
 		prog.setUniform("viewMatrix", worldMatrix);
 		prog.setUniform("color", new Vector4f(1, 1, 1, 1));
+
+		System.out.println(worldMatrix + " ");
 
 		Properties.update();
 	}

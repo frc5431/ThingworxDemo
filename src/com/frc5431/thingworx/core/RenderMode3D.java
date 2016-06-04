@@ -40,7 +40,7 @@ public class RenderMode3D extends JumboRenderMode {
 
 	private static final float Z_FAR = 1000.0f;
 
-	private Vector3f offset = new Vector3f(0.6f, -1.8f, -44.5f), rotation = new Vector3f(0, 0, 0);
+	private Vector3f offset = new Vector3f(0, 0, 0), rotation = new Vector3f(0, 0, 0);
 	RawModel frame, flywheels, rdrive, ldrive, intake, ball;
 
 	public RenderMode3D() throws Exception {
@@ -60,6 +60,7 @@ public class RenderMode3D extends JumboRenderMode {
 		prog.setUniform("projectionMatrix", projectionMatrix);
 
 		prog.createUniform("worldMatrix");
+		prog.setUniform("worldMatrix", new Matrix4f().translate(new Vector3f(0.6f, -1.8f, -44.5f)));
 
 		prog.createUniform("color");
 
@@ -68,6 +69,7 @@ public class RenderMode3D extends JumboRenderMode {
 
 		prog.setUniform("lightPosition", new Vector3f(0.6f, -1.8f, -44.5f));
 		prog.setUniform("lightColor", new Vector3f(1, 1, 1));
+		prog.createUniform("viewMatrix");
 
 		prog.unbind();
 
@@ -160,7 +162,7 @@ public class RenderMode3D extends JumboRenderMode {
 		GL11.glDrawElements(GL_TRIANGLES, flywheels.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
 
 		if (Properties.ballIn) {
-			prog.setUniform("color", new Vector4f(0, 0, 1, 1));
+			prog.setUniform("color", new Vector4f(1, 0.5f, 0, 1));
 			glBindVertexArray(ball.getVaoID());
 			glEnableVertexAttribArray(0);
 			glEnableVertexAttribArray(2);
@@ -192,16 +194,16 @@ public class RenderMode3D extends JumboRenderMode {
 
 		final float MOVE_SPEED = 0.5f;
 
-		if (JumboInputHandler.isKeyDown(JumboKey.W)) {
+		if (JumboInputHandler.isKeyDown(JumboKey.S)) {
 			rotation.setX(rotation.getX() - MOVE_SPEED);
 		}
-		if (JumboInputHandler.isKeyDown(JumboKey.S)) {
+		if (JumboInputHandler.isKeyDown(JumboKey.W)) {
 			rotation.setX(rotation.getX() + MOVE_SPEED);
 		}
-		if (JumboInputHandler.isKeyDown(JumboKey.D)) {
+		if (JumboInputHandler.isKeyDown(JumboKey.A)) {
 			rotation.setY(rotation.getY() - MOVE_SPEED);
 		}
-		if (JumboInputHandler.isKeyDown(JumboKey.A)) {
+		if (JumboInputHandler.isKeyDown(JumboKey.D)) {
 			rotation.setY(rotation.getY() + MOVE_SPEED);
 		}
 		if (JumboInputHandler.isKeyDown(JumboKey.Q)) {
@@ -222,7 +224,7 @@ public class RenderMode3D extends JumboRenderMode {
 		Matrix4f.rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0), worldMatrix, worldMatrix);
 		Matrix4f.rotate((float) Math.toRadians(rotation.x), new Vector3f(1, 0, 0), worldMatrix, worldMatrix);
 
-		prog.setUniform("worldMatrix", worldMatrix);
+		prog.setUniform("viewMatrix", worldMatrix);
 		prog.setUniform("color", new Vector4f(1, 1, 1, 1));
 
 		Properties.update();

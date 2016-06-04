@@ -27,6 +27,9 @@ public class Demo {
 			} catch (Exception e) {
 				JumboErrorHandler.handle(e);
 			}
+
+			JumboRenderer.setRefreshcolor(0, 0.7f, 1f);
+
 			final JumboLayer l = new JumboLayer();
 
 			l.addEntity(new RobotObject());

@@ -6,13 +6,13 @@ import com.jumbo.tools.input.JumboInputHandler;
 import com.jumbo.tools.input.JumboKey;
 
 public class Properties {
+	/* start of changeable values */
 	public static int flywheelRPM = 0, intake = 0;
-
 	public static float rDrive = 0, lDrive = 0;
-
-	public static final int maxFlywheel = 4350;
-
 	public static boolean ballIn = false;
+	/* end of changeable values */
+
+	public static final int maxFlywheel = 4500;
 
 	public static final Vector4f WHITE = new Vector4f(1, 1, 1, 1), RED = new Vector4f(1, 0, 0, 1),
 			GREEN = new Vector4f(0, 1, 0, 1), BLACK = new Vector4f(0, 0, 0, 1),

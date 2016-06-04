@@ -143,7 +143,6 @@ public class ShaderProgram {
 	}
 
 	public void setUniform(String uniformName, Vector3f value) {
-		System.out.println(value);
 		GL20.glUniform3f(uniforms.get(uniformName), value.x, value.y, value.z);
 	}
 

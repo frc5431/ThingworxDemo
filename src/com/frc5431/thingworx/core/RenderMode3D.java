@@ -20,7 +20,6 @@ import org.lwjgl.util.vector.Vector4f;
 
 import com.jumbo.core.JumboGraphicsObject;
 import com.jumbo.core.JumboRenderMode;
-import com.jumbo.core.JumboTexture;
 import com.jumbo.tools.calculations.JumboMathHandler;
 import com.jumbo.tools.input.JumboInputHandler;
 import com.jumbo.tools.input.JumboKey;
@@ -161,7 +160,7 @@ public class RenderMode3D extends JumboRenderMode {
 		glEnableVertexAttribArray(2);
 		GL11.glDrawElements(GL_TRIANGLES, flywheels.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
 
-		if (Properties.ballIn) {
+		if ((boolean) Properties.properties.get("ballIn").getValue()) {
 			prog.setUniform("color", new Vector4f(1, 0.5f, 0, 1));
 			glBindVertexArray(ball.getVaoID());
 			glEnableVertexAttribArray(0);
@@ -177,7 +176,7 @@ public class RenderMode3D extends JumboRenderMode {
 
 		prog.unbind();
 
-		JumboTexture.unbind();
+		// JumboTexture.unbind();
 
 		// super.render(e, renderwidth, renderheight);
 	}

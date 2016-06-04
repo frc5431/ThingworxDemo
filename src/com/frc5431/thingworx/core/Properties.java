@@ -1,25 +1,23 @@
 package com.frc5431.thingworx.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.lwjgl.util.vector.Vector4f;
 
 import com.jumbo.tools.input.JumboInputHandler;
 import com.jumbo.tools.input.JumboKey;
 
 public class Properties {
-	/* start of changeable values */
-	public static int flywheelRPM = 0, intake = 0; // flywheelRPM is a value
-													// from 0 to maxFlywheel,
-													// represents rpm of the
-													// flywheel. intake is
-													// either -1, 0, or 1. -1
-													// means it is in reverse, 0
-													// means off, 1 menas
-													// forward.
-	public static float rDrive = 0, lDrive = 0;// both values are from -1.0 to
-												// 1.0. they are raw joystick
-												// values
-	public static boolean ballIn = false;// true if ball is in, false otherwise
-	/* end of changeable values */
+	public static Map<String, Property> properties = new HashMap<>();;
+
+	static {
+		properties.put("ballIn", new Property(false));
+		properties.put("flywheelRPM", new Property(0));
+		properties.put("intake", new Property(0));
+		properties.put("rDrive", new Property(0.0f));
+		properties.put("lDrive", new Property(0.0f));
+	}
 
 	public static final int maxFlywheel = 4500;
 
@@ -34,57 +32,66 @@ public class Properties {
 	public static void update() {
 		if (CHEAT_MODE) {
 			if (JumboInputHandler.isKeyDown(JumboKey.ONE)) {
-				if (rDrive < 1) {
-					rDrive += 0.05f;
+				if ((float) properties.get("rDrive").getValue() < 1) {
+					properties.get("rDrive").setValue((float) properties.get("rDrive").getValue() + 0.05f);
 				}
 			} else if (JumboInputHandler.isKeyDown(JumboKey.TWO)) {
-				if (rDrive > -1) {
-					rDrive -= 0.05f;
+				if ((float) properties.get("rDrive").getValue() > -1) {
+					properties.get("rDrive").setValue((float) properties.get("rDrive").getValue() - 0.05f);
 				}
 			}
 			if (JumboInputHandler.isKeyDown(JumboKey.THREE)) {
-				if (lDrive < 1) {
-					lDrive += 0.05f;
+				if ((float) properties.get("lDrive").getValue() < 1) {
+					properties.get("lDrive").setValue((float) properties.get("lDrive").getValue() + 0.05f);
 				}
 			} else if (JumboInputHandler.isKeyDown(JumboKey.FOUR)) {
-				if (lDrive > -1) {
-					lDrive -= 0.05f;
+				if ((float) properties.get("lDrive").getValue() > -1) {
+					properties.get("lDrive").setValue((float) properties.get("lDrive").getValue() - 0.05f);
 				}
 			}
 			if (JumboInputHandler.isKeyDown(JumboKey.FIVE)) {
-				intake = intake != 0 ? 0 : 1;
+				properties.get("intake").setValue((int) properties.get("intake").getValue() != 0 ? 0 : 1);
 			} else if (JumboInputHandler.isKeyDown(JumboKey.SIX)) {
-				intake = intake != 0 ? 0 : -1;
+				properties.get("intake").setValue((int) properties.get("intake").getValue() != 0 ? 0 : -1);
 			}
 			if (JumboInputHandler.isKeyDown(JumboKey.SEVEN)) {
-				if (flywheelRPM < maxFlywheel) {
-					flywheelRPM += 50;
+				if ((int) properties.get("flywheelRPM").getValue() < maxFlywheel) {
+					properties.get("flywheelRPM").setValue((int) properties.get("flywheelRPM").getValue() + 50);
 				}
 			} else if (JumboInputHandler.isKeyDown(JumboKey.EIGHT)) {
-				if (flywheelRPM > 0) {
-					flywheelRPM -= 50;
+				if ((int) properties.get("flywheelRPM").getValue() > 0) {
+					properties.get("flywheelRPM").setValue((int) properties.get("flywheelRPM").getValue() - 50);
 				}
 			}
 			if (JumboInputHandler.isKeyDown(41)) {
-				ballIn = !ballIn;
+				properties.get("ballIn").setValue(!(boolean) properties.get("ballIn").getValue());
 			}
 		}
 
-		intakeColor = intake != 0 ? intake == 1 ? GREEN : RED : GREY;
+		intakeColor = (int) properties.get("intake").getValue() != 0
+				? (int) properties.get("intake").getValue() == 1 ? GREEN : RED : GREY;
 
-		float flywheelModifier = (float) flywheelRPM / maxFlywheel;
+		float flywheelModifier = (float) (int) properties.get("flywheelRPM").getValue() / maxFlywheel;
 		flywheelColor = new Vector4f(0.5f - (0.5f * flywheelModifier), 0.5f + (0.5f * flywheelModifier),
 				0.5f - (0.5f * flywheelModifier), 1);
 
-		if (rDrive >= 0) {
-			rDriveColor = new Vector4f(0.5f - (0.5f * rDrive), 0.5f + (0.5f * rDrive), 0.5f - (0.5f * rDrive), 1);
+		if ((float) properties.get("rDrive").getValue() >= 0) {
+			rDriveColor = new Vector4f(0.5f - (0.5f * (float) properties.get("rDrive").getValue()),
+					0.5f + (0.5f * (float) properties.get("rDrive").getValue()),
+					0.5f - (0.5f * (float) properties.get("rDrive").getValue()), 1);
 		} else {
-			rDriveColor = new Vector4f(0.5f - (0.5f * rDrive), 0.5f + (0.5f * rDrive), 0.5f + (0.5f * rDrive), 1);
+			rDriveColor = new Vector4f(0.5f - (0.5f * (float) properties.get("rDrive").getValue()),
+					0.5f + (0.5f * (float) properties.get("rDrive").getValue()),
+					0.5f + (0.5f * (float) properties.get("rDrive").getValue()), 1);
 		}
-		if (lDrive >= 0) {
-			lDriveColor = new Vector4f(0.5f - (0.5f * lDrive), 0.5f + (0.5f * lDrive), 0.5f - (0.5f * lDrive), 1);
+		if ((float) properties.get("lDrive").getValue() >= 0) {
+			lDriveColor = new Vector4f(0.5f - (0.5f * (float) properties.get("lDrive").getValue()),
+					0.5f + (0.5f * (float) properties.get("lDrive").getValue()),
+					0.5f - (0.5f * (float) properties.get("lDrive").getValue()), 1);
 		} else {
-			lDriveColor = new Vector4f(0.5f - (0.5f * lDrive), 0.5f + (0.5f * lDrive), 0.5f + (0.5f * lDrive), 1);
+			lDriveColor = new Vector4f(0.5f - (0.5f * (float) properties.get("lDrive").getValue()),
+					0.5f + (0.5f * (float) properties.get("lDrive").getValue()),
+					0.5f + (0.5f * (float) properties.get("lDrive").getValue()), 1);
 		}
 	}
 

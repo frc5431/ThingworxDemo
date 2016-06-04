@@ -4,6 +4,11 @@ import com.jumbo.core.JumboEntity;
 
 public class Database extends JumboEntity {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public Database() {
 		super(null);
 	}

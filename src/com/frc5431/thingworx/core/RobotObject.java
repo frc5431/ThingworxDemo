@@ -14,7 +14,7 @@ public class RobotObject extends JumboGraphicsObject {
 
 	@Override
 	protected void customRender() {
-		JumboRenderer.render(this, Demo.MODE_ID);
+		JumboRenderer.render(this, Simulator.MODE_ID);
 	}
 
 	@Override

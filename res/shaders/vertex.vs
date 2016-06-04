@@ -1,11 +1,21 @@
 #version 330
 
 layout (location=0) in vec3 position;
-uniform mat4 projectionMatrix;
-uniform mat4 worldMatrix;
+layout (location=2) in vec3 normal;
 
+out vec3 surfaceNormal;
+out vec3 toLightVector;
+
+uniform vec3 lightPosition;
+
+uniform mat4 worldMatrix;
+uniform mat4 projectionMatrix;
 
 void main()
 {
-    gl_Position = projectionMatrix*worldMatrix*vec4(position,1.0);
+	vec4 mvPos = worldMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * mvPos;	
+	
+	surfaceNormal = (worldMatrix*vec4(normal,0.0)).xyz;
+	toLightVector= lightPosition-mvPos.xyz;
 }

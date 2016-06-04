@@ -27,6 +27,8 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.Util;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 public class ShaderProgram {
 
@@ -122,6 +124,52 @@ public class ShaderProgram {
 		fb.flip();
 		GL20.glUniformMatrix4(uniforms.get(uniformName), false, fb);
 		Util.checkGLError();
-
 	}
+
+	public void setUniform(String uniformName, org.joml.Matrix4f worldMatrix) {
+		final FloatBuffer fb = BufferUtils.createFloatBuffer(16);
+		worldMatrix.get(fb);
+		fb.flip();
+		GL20.glUniformMatrix4(uniforms.get(uniformName), false, fb);
+		Util.checkGLError();
+	}
+
+	public void setUniform(String uniformName, int value) {
+		GL20.glUniform1i(uniforms.get(uniformName), value);
+	}
+
+	public void setUniform(String uniformName, float value) {
+		GL20.glUniform1f(uniforms.get(uniformName), value);
+	}
+
+	public void setUniform(String uniformName, Vector3f value) {
+		System.out.println(value);
+		GL20.glUniform3f(uniforms.get(uniformName), value.x, value.y, value.z);
+	}
+
+	public void setUniform(String uniformName, org.joml.Vector3f value) {
+		GL20.glUniform3f(uniforms.get(uniformName), value.x, value.y, value.z);
+	}
+
+	public void setUniform(String uniformName, Vector4f value) {
+		GL20.glUniform4f(uniforms.get(uniformName), value.x, value.y, value.z, value.w);
+	}
+
+	public void bindAttributeLocation(int id, String name) {
+		GL20.glBindAttribLocation(programId, id, name);
+	}
+
+	public void createDirectionalLightUniform(String uniformName) throws Exception {
+		createUniform(uniformName + ".colour");
+		createUniform(uniformName + ".direction");
+		createUniform(uniformName + ".intensity");
+	}
+
+	// ...
+	public void setUniform(String uniformName, DirectionalLight dirLight) {
+		setUniform(uniformName + ".colour", dirLight.getColor());
+		setUniform(uniformName + ".direction", dirLight.getDirection());
+		setUniform(uniformName + ".intensity", dirLight.getIntensity());
+	}
+
 }

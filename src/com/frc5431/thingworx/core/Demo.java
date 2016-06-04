@@ -21,7 +21,7 @@ public class Demo {
 		JumboSettings.logerrors = false;
 		Jumbo.setLaunchAction(() -> {
 			try {
-				MODE_ID = JumboRenderer.addRenderMode(new ThreeDimRenderer());
+				MODE_ID = JumboRenderer.addRenderMode(new RenderMode3D());
 				// JumboRenderer.setCurrentRenderMode(MODE_ID);
 				// JumboRenderer.removeRenderMode(JumboRenderer.locationOfMode(JumboRenderer.getMode(0)));
 			} catch (Exception e) {
@@ -30,11 +30,19 @@ public class Demo {
 			final JumboLayer l = new JumboLayer();
 
 			l.addEntity(new RobotObject());
-			l.addEntity(new JumboTextBox(new Rectangle(0, 0, 720, 100), new JumboText("<#FFFFFFi1>DEMO")));
+			final JumboTextBox title = new JumboTextBox(new Rectangle(0, 0, 720, 100),
+					new JumboText("<#FFAAFFs64>DEMIO"));
+			title.setMaintainwidth(false);
+			;
+			title.setMaintainingPosition(true);
+			l.addEntity(title);
 
 			final JumboScene s = new JumboScene(l);
 			Jumbo.setScene(s);
 		});
-		Jumbo.start(new JumboLaunchConfig("FRC 5431", new Dimension(720, 480), "res/fonts/liavishis"));
+		final JumboLaunchConfig launch = new JumboLaunchConfig("FRC 5431", new Dimension(720, 480),
+				"res/fonts/liavishis");
+		launch.resizable = true;
+		Jumbo.start(launch);
 	}
 }

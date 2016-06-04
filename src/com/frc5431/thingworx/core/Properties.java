@@ -19,6 +19,8 @@ public class Properties {
 		properties.put("lDrive", new Property(0.0f));
 	}
 
+	public static String selectedObject = "";
+
 	public static final int maxFlywheel = 4500;
 
 	public static final Vector4f WHITE = new Vector4f(1, 1, 1, 1), RED = new Vector4f(1, 0, 0, 1),

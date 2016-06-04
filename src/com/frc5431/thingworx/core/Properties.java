@@ -7,9 +7,18 @@ import com.jumbo.tools.input.JumboKey;
 
 public class Properties {
 	/* start of changeable values */
-	public static int flywheelRPM = 0, intake = 0;
-	public static float rDrive = 0, lDrive = 0;
-	public static boolean ballIn = false;
+	public static int flywheelRPM = 0, intake = 0; // flywheelRPM is a value
+													// from 0 to maxFlywheel,
+													// represents rpm of the
+													// flywheel. intake is
+													// either -1, 0, or 1. -1
+													// means it is in reverse, 0
+													// means off, 1 menas
+													// forward.
+	public static float rDrive = 0, lDrive = 0;// both values are from -1.0 to
+												// 1.0. they are raw joystick
+												// values
+	public static boolean ballIn = false;// true if ball is in, false otherwise
 	/* end of changeable values */
 
 	public static final int maxFlywheel = 4500;

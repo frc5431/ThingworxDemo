@@ -32,6 +32,7 @@ public class Demo {
 
 			final JumboLayer l = new JumboLayer();
 
+			l.addEntity(new Database());
 			l.addEntity(new RobotObject());
 			final JumboTextBox title = new JumboTextBox(new Rectangle(0, 0, 720, 100),
 					new JumboText("<#FFAAFFs64>DEMIO"));

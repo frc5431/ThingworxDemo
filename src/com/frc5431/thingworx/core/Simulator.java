@@ -59,11 +59,18 @@ public class Simulator {
 			info.setMaintainheight(false);
 			info.setMaintainingPosition(true);
 
+			final JumboImage cameraBackground = new JumboImage(new JumboTexture(JumboColor.LIGHT_GREY),
+					new Rectangle(200, 300, 42, 84));
+			info.array.add(cameraBackground);
+
 			info.array.add(new JumboImage(new JumboTexture(JumboColor.LIGHT_GREY), new Rectangle(0, 0, 200, 480)));
 			info.array.add(createPropertiesOverlay());
 
 			info.setAllChildrenMaintainingPosition(true);
 			info.setAllChildrenMaintainingHeight(false);
+
+			cameraBackground.setMaintainheight(true);
+			cameraBackground.setMaintainy(false);
 
 			final LambdaObject<Boolean> extended = new LambdaObject<>(false);
 
@@ -92,7 +99,39 @@ public class Simulator {
 			extendo.setMaintainingPosition(true);
 			info.array.add(extendo);
 
+			final JumboTexture cameras = new JumboTexture("res/assets/cameras.png");
+			final JumboTexture manualCamera = new JumboTexture(cameras), autoCamera = new JumboTexture(cameras);
+			manualCamera.setTextureCoords(new FloatRectangle(0, 0.5f, 1, 0.5f));
+			autoCamera.setTextureCoords(new FloatRectangle(0, 0, 1, 0.5f));
+
+			final JumboButton autoCameraButton = new JumboButton(autoCamera,
+					new JumboTexture(autoCamera, JumboColor.DARK_BLUE), new Rectangle(0, 5, 32, 32));
+			autoCameraButton.setMaintainingPosition(true);
+			autoCameraButton.addParent(cameraBackground);
+			autoCameraButton.setDisabledIcon(new JumboTexture(autoCamera, JumboColor.LIGHT_BLUE));
+
+			final JumboButton manualCameraButton = new JumboButton(manualCamera,
+					new JumboTexture(manualCamera, JumboColor.DARK_BLUE), new Rectangle(0, 47, 32, 32));
+			manualCameraButton.setMaintainingPosition(true);
+			manualCameraButton.addParent(cameraBackground);
+			manualCameraButton.setDisabledIcon(new JumboTexture(manualCamera, JumboColor.LIGHT_BLUE));
+			manualCameraButton.setClickAction(() -> {
+				autoCameraButton.setActive(true);
+				manualCameraButton.setActive(false);
+				RenderMode3D.mode = RenderMode3D.CAMERA_MODE.MANUAL;
+			});
+			l.addEntity(manualCameraButton);
+
+			autoCameraButton.setClickAction(() -> {
+				autoCameraButton.setActive(false);
+				manualCameraButton.setActive(true);
+				RenderMode3D.mode = RenderMode3D.CAMERA_MODE.AUTO;
+			});
+			autoCameraButton.trigger();
+
 			l.addEntity(info);
+			l.addEntity(autoCameraButton);
+			l.addEntity(manualCameraButton);
 
 			final JumboScene s = new JumboScene(l);
 			Jumbo.setScene(s);

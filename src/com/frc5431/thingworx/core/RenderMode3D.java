@@ -39,6 +39,12 @@ public class RenderMode3D extends JumboRenderMode {
 
 	private static final float Z_FAR = 1000.0f;
 
+	public enum CAMERA_MODE {
+		MANUAL, AUTO;
+	}
+
+	public static CAMERA_MODE mode = CAMERA_MODE.AUTO;
+
 	private Vector3f offset = new Vector3f(0, 0, 0), rotation = new Vector3f(0, 0, 0);
 	RawModel frame, flywheels, rdrive, ldrive, intake, ball;
 
@@ -53,13 +59,14 @@ public class RenderMode3D extends JumboRenderMode {
 
 		prog.bind();
 
-		final org.lwjgl.util.vector.Matrix4f projectionMatrix = JumboMathHandler.createProjectionMatrix(FOV, Z_NEAR,
-				Z_FAR);
 		prog.createUniform("projectionMatrix");
-		prog.setUniform("projectionMatrix", projectionMatrix);
 
 		prog.createUniform("worldMatrix");
 		prog.setUniform("worldMatrix", new Matrix4f().translate(new Vector3f(0.6f, -1.8f, -44.5f)));
+
+		final org.lwjgl.util.vector.Matrix4f projectionMatrix = JumboMathHandler.createProjectionMatrix(FOV, Z_NEAR,
+				Z_FAR);
+		prog.setUniform("projectionMatrix", projectionMatrix);
 
 		prog.createUniform("color");
 
@@ -193,39 +200,57 @@ public class RenderMode3D extends JumboRenderMode {
 
 		final float MOVE_SPEED = 0.5f;
 
-		if (JumboInputHandler.isKeyDown(JumboKey.S)) {
-			rotation.setX(rotation.getX() - MOVE_SPEED);
-		}
-		if (JumboInputHandler.isKeyDown(JumboKey.W)) {
-			rotation.setX(rotation.getX() + MOVE_SPEED);
-		}
-		if (JumboInputHandler.isKeyDown(JumboKey.A)) {
-			rotation.setY(rotation.getY() - MOVE_SPEED);
-		}
-		if (JumboInputHandler.isKeyDown(JumboKey.D)) {
-			rotation.setY(rotation.getY() + MOVE_SPEED);
-		}
-		if (JumboInputHandler.isKeyDown(JumboKey.Q)) {
-			rotation.setZ(rotation.getZ() + MOVE_SPEED);
-		}
-		if (JumboInputHandler.isKeyDown(JumboKey.E)) {
-			rotation.setZ(rotation.getZ() - MOVE_SPEED);
-		}
-		if (JumboInputHandler.wheel > 0) {
-			offset.setZ(offset.getZ() + MOVE_SPEED * 5);
-		} else if (JumboInputHandler.wheel < 0) {
-			offset.setZ(offset.getZ() - MOVE_SPEED * 5);
+		if (mode == CAMERA_MODE.MANUAL) {
+
+			if (JumboInputHandler.isKeyDown(JumboKey.S)) {
+				rotation.setX(rotation.getX() - MOVE_SPEED);
+			}
+			if (JumboInputHandler.isKeyDown(JumboKey.W)) {
+				rotation.setX(rotation.getX() + MOVE_SPEED);
+			}
+			if (JumboInputHandler.isKeyDown(JumboKey.A)) {
+				rotation.setY(rotation.getY() - MOVE_SPEED);
+			}
+			if (JumboInputHandler.isKeyDown(JumboKey.D)) {
+				rotation.setY(rotation.getY() + MOVE_SPEED);
+			}
+			if (JumboInputHandler.isKeyDown(JumboKey.Q)) {
+				rotation.setZ(rotation.getZ() + MOVE_SPEED);
+			}
+			if (JumboInputHandler.isKeyDown(JumboKey.E)) {
+				rotation.setZ(rotation.getZ() - MOVE_SPEED);
+			}
+			if (JumboInputHandler.wheel > 0) {
+				offset.setZ(offset.getZ() + MOVE_SPEED * 5);
+			} else if (JumboInputHandler.wheel < 0) {
+				offset.setZ(offset.getZ() - MOVE_SPEED * 5);
+			}
+		} else {
+			rotation.y += MOVE_SPEED / 2;
+			offset.y = -6;
+			rotation.x = 50;
+			offset.z = -8;
 		}
 
 		final Matrix4f worldMatrix = (Matrix4f) new Matrix4f().setIdentity();
 		worldMatrix.translate(offset);
-		Matrix4f.rotate((float) Math.toRadians(rotation.z), new Vector3f(0, 0, 1), worldMatrix, worldMatrix);
-		Matrix4f.rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0), worldMatrix, worldMatrix);
 		Matrix4f.rotate((float) Math.toRadians(rotation.x), new Vector3f(1, 0, 0), worldMatrix, worldMatrix);
+		Matrix4f.rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0), worldMatrix, worldMatrix);
+		Matrix4f.rotate((float) Math.toRadians(rotation.z), new Vector3f(0, 0, 1), worldMatrix, worldMatrix);
 
 		prog.setUniform("viewMatrix", worldMatrix);
 		prog.setUniform("color", new Vector4f(1, 1, 1, 1));
+
 		Properties.update();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		prog.bind();
+		final org.lwjgl.util.vector.Matrix4f projectionMatrix = JumboMathHandler.createProjectionMatrix(FOV, Z_NEAR,
+				Z_FAR);
+		prog.setUniform("projectionMatrix", projectionMatrix);
+		prog.unbind();
 	}
 
 	@Override

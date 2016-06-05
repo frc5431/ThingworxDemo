@@ -3,6 +3,7 @@ package com.jumbo.core;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
@@ -11,6 +12,8 @@ import com.jumbo.components.Position;
 import com.jumbo.components.interfaces.RenderAction;
 import com.jumbo.components.interfaces.TriggeredAction;
 import com.jumbo.tools.JumboErrorHandler;
+import com.jumbo.tools.JumboSettings;
+import com.jumbo.tools.calculations.JumboMathHandler;
 
 /**
  * Class that contains various interfaces to be used for renderring by the
@@ -28,6 +31,20 @@ import com.jumbo.tools.JumboErrorHandler;
  * @see JumboLayer
  **/
 public class JumboRenderMode {
+
+	@SuppressWarnings("static-method")
+	public void resize(int newWidth, int newHeight) {
+		GL11.glLoadIdentity();
+
+		final float factor = Display.getPixelScaleFactor();
+
+		JumboMathHandler.currentdim = new Dimension(newWidth, newHeight);
+		GL11.glOrtho(0.0f, newWidth, 0, newHeight, 0.0f, 1.0f);
+		GL11.glViewport(0, 0, newWidth, newHeight);
+		// }
+		JumboMathHandler.xmod = (newWidth / ((float) JumboSettings.launchConfig.width()));
+		JumboMathHandler.ymod = (newHeight / ((float) JumboSettings.launchConfig.height()));
+	}
 
 	@SuppressWarnings("static-method")
 	public void render(JumboGraphicsObject e, int renderwidth, int renderheight) {

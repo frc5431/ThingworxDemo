@@ -418,6 +418,14 @@ public class JumboButton extends JumboGraphicsObject {
 		}
 	}
 
+	public void setDisabledIcon(JumboImage icon) {
+		this.disabledicon = icon;
+	}
+
+	public void setDisabledIcon(JumboTexture icon) {
+		this.disabledicon.setTexture(icon);
+	}
+
 	/**
 	 * @param hovericon
 	 *            the hovericon to set
@@ -452,6 +460,19 @@ public class JumboButton extends JumboGraphicsObject {
 		if (action != null) {
 			action.action();
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.jumbo.core.JumboEntity#additionalCalculations(java.awt.Rectangle)
+	 */
+	@Override
+	public Rectangle additionalCalculations(Rectangle inbounds) {
+		final Rectangle bounds = super.additionalCalculations(inbounds);
+
+		return bounds;
 	}
 
 }

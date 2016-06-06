@@ -46,7 +46,7 @@ public class RenderMode3D extends JumboRenderMode {
 	public static CAMERA_MODE mode = CAMERA_MODE.AUTO;
 
 	private Vector3f offset = new Vector3f(0, 0, 0), rotation = new Vector3f(0, 0, 0);
-	RawModel frame, flywheels, rdrive, ldrive, intake, ball;
+	RawModel frame, rflywheel, lflywheel, rdrive, ldrive, intake, ball, arrow;
 
 	public RenderMode3D() throws Exception {
 
@@ -107,11 +107,13 @@ public class RenderMode3D extends JumboRenderMode {
 		// indicesBuffer.flip();
 
 		frame = Loader.loadToVAO(OBJFileLoader.loadOBJ("robot-frame.obj"));
-		flywheels = Loader.loadToVAO(OBJFileLoader.loadOBJ("robot-flywheels.obj"));
+		rflywheel = Loader.loadToVAO(OBJFileLoader.loadOBJ("robot-flywheel-right.obj"));
+		lflywheel = Loader.loadToVAO(OBJFileLoader.loadOBJ("robot-flywheel-left.obj"));
 		rdrive = Loader.loadToVAO(OBJFileLoader.loadOBJ("robot-right-drive.obj"));
 		ldrive = Loader.loadToVAO(OBJFileLoader.loadOBJ("robot-left-drive.obj"));
 		intake = Loader.loadToVAO(OBJFileLoader.loadOBJ("robot-intake.obj"));
 		ball = Loader.loadToVAO(OBJFileLoader.loadOBJ("ball.obj"));
+		arrow = Loader.loadToVAO(OBJFileLoader.loadOBJ("arrow-up.obj"));
 
 		Util.checkGLError();
 
@@ -124,6 +126,14 @@ public class RenderMode3D extends JumboRenderMode {
 	}
 
 	private final ShaderProgram prog;
+
+	private void render(RawModel d) {
+		glBindVertexArray(d.getVaoID());
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+		GL11.glDrawElements(GL_TRIANGLES, d.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -138,42 +148,30 @@ public class RenderMode3D extends JumboRenderMode {
 		Util.checkGLError();
 
 		prog.setUniform("color", Properties.WHITE);
-		glBindVertexArray(frame.getVaoID());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(2);
-		GL11.glDrawElements(GL_TRIANGLES, frame.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+		render(frame);
 
 		prog.setUniform("color", Properties.intakeColor);
-		glBindVertexArray(intake.getVaoID());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(2);
-		GL11.glDrawElements(GL_TRIANGLES, intake.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+		render(intake);
 
 		prog.setUniform("color", Properties.lDriveColor);
-		glBindVertexArray(ldrive.getVaoID());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(2);
-		GL11.glDrawElements(GL_TRIANGLES, ldrive.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+		render(ldrive);
 
 		prog.setUniform("color", Properties.rDriveColor);
-		glBindVertexArray(rdrive.getVaoID());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(2);
-		GL11.glDrawElements(GL_TRIANGLES, rdrive.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+		render(rdrive);
 
-		prog.setUniform("color", Properties.flywheelColor);
-		glBindVertexArray(flywheels.getVaoID());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(2);
-		GL11.glDrawElements(GL_TRIANGLES, flywheels.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+		prog.setUniform("color", Properties.rFlywheelColor);
+		render(rflywheel);
+
+		prog.setUniform("color", Properties.lFlywheelColor);
+		render(lflywheel);
 
 		if ((boolean) Properties.properties.get("ballIn").getValue()) {
 			prog.setUniform("color", new Vector4f(0, 0, 0.5f, 1));
-			glBindVertexArray(ball.getVaoID());
-			glEnableVertexAttribArray(0);
-			glEnableVertexAttribArray(2);
-			GL11.glDrawElements(GL_TRIANGLES, ball.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+			render(ball);
 		}
+
+		prog.setUniform("color", new Vector4f(0, 0, 0.5f, 1));
+		render(arrow);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);

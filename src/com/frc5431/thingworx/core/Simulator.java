@@ -172,7 +172,7 @@ public class Simulator {
 
 			};
 			final JumboButton background = new JumboButton(new JumboTexture(JumboColor.DARK_GREY),
-					new Rectangle(0, 0, 200, 50));
+					new Rectangle(20, 0, 180, 50));
 			background.setTexture(new JumboTexture(JumboColor.DARK_GREY));// the
 																			// constructor
 																			// doesnt
@@ -183,16 +183,16 @@ public class Simulator {
 			value.array.add(background);
 
 			final JumboImage bevel = new JumboImage(new JumboTexture(new JumboColor(0.5f, 0.5f, 0.5f)),
-					new Rectangle(5, 5, 190, 40));
+					new Rectangle(20, 5, 175, 40));
 			value.array.add(bevel);
 
-			final JumboTextBox title = new JumboTextBox(new Rectangle(0, 15, 200, 30),
-					new JumboText("<s32#FFFFFFi1>" + key));
+			final JumboTextBox title = new JumboTextBox(new Rectangle(20, 15, 180, 30),
+					new JumboText("<s30#FFFFFFi1>" + key));
 			value.array.add(title);
 
-			final JumboTextBox valueText = new JumboTextBox(new Rectangle(0, 0, 200, 15), new JumboText("Loading..."));
+			final JumboTextBox valueText = new JumboTextBox(new Rectangle(20, 0, 180, 15), new JumboText("Loading..."));
 			valueText.setCustomRenderAction(() -> {
-				valueText.setText("<s24#FFFFFFi0>" + p.getValue());
+				valueText.setText("<s22#FFFFFFi0>" + p.getValue());
 			});
 			value.array.add(valueText);
 

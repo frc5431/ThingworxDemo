@@ -38,7 +38,15 @@ public class RobotData {
 	}
 
 	public static double JD(JsonObject got, String toGrab) {
-		return toDigit(got.get(toGrab).asString());
+		try {
+			return toDigit(got.get(toGrab).asString());
+		} catch (NullPointerException err) {
+			return 0.0;
+		}
+	}
+
+	public static double JDBoolean(JsonObject got, String toGrab) {
+		return Boolean.parseBoolean(got.get(toGrab).asString()) ? 1.0 : 0.0;
 	}
 
 	public static void closeDB() {
@@ -98,7 +106,9 @@ public class RobotData {
 				}
 			}
 			JsonObject got = worx.get_property();
+			try { 
 			timestamp = got.get("timestamp").asString();
+			} catch(Exception err) {}
 			updating = (timestamp != laststamp);
 			laststamp = timestamp;
 			xangle = JD(got, "xangle");
@@ -113,11 +123,11 @@ public class RobotData {
 			rdistance = JD(got, "rdistance");
 			leftdrivepower = JD(got, "leftdrivepower");
 			rightdrivepower = JD(got, "rightdrivepower");
-			choppers = JD(got, "choppers");
-			auton = JD(got, "auton");
-			teleop = JD(got, "teleop");
-			enabled = JD(got, "enabled");
-			ballIn = JD(got, "ballIn");
+			choppers = JDBoolean(got, "choppers");
+			auton = JDBoolean(got, "auton");
+			teleop = JDBoolean(got, "teleop");
+			enabled = JDBoolean(got, "enabled");
+			ballIn = JDBoolean(got, "ballIn");
 			intake = JD(got, "intake");
 			towerdistance = JD(got, "towerdistance");
 			fromcenter = JD(got, "fromcenter");
@@ -180,9 +190,8 @@ public class RobotData {
 	public static String fmt(double d) {
 		if (d == (long) d) {
 			return String.format("%d", (long) d);
-		} else {
-			return String.format("%s", d);
 		}
+		return String.format("%s", d);
 	}
 
 	public static boolean isUpdating() {

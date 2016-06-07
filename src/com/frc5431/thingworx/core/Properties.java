@@ -187,23 +187,18 @@ public class Properties {
 		rFlywheelColor = new Vector4f(0.5f - (0.5f * flywheelModifier), 0.5f + (0.5f * flywheelModifier),
 				0.5f - (0.5f * flywheelModifier), 1);
 
-		if ((float) properties.get("rDrive").getValue() >= 0) {
-			rDriveColor = new Vector4f(0.5f - (0.5f * (float) properties.get("rDrive").getValue()),
-					0.5f + (0.5f * (float) properties.get("rDrive").getValue()),
-					0.5f - (0.5f * (float) properties.get("rDrive").getValue()), 1);
+		final float lDrive = -((float) properties.get("lDrive").getValue()),
+				rDrive = -((float) properties.get("rDrive").getValue());
+
+		if (rDrive >= 0) {
+			rDriveColor = new Vector4f(0.5f - (0.5f * rDrive), 0.5f + (0.5f * rDrive), 0.5f - (0.5f * rDrive), 1);
 		} else {
-			rDriveColor = new Vector4f(0.5f - (0.5f * (float) properties.get("rDrive").getValue()),
-					0.5f + (0.5f * (float) properties.get("rDrive").getValue()),
-					0.5f + (0.5f * (float) properties.get("rDrive").getValue()), 1);
+			rDriveColor = new Vector4f(0.5f - (0.5f * rDrive), 0.5f + (0.5f * rDrive), 0.5f + (0.5f * rDrive), 1);
 		}
-		if ((float) properties.get("lDrive").getValue() >= 0) {
-			lDriveColor = new Vector4f(0.5f - (0.5f * (float) properties.get("lDrive").getValue()),
-					0.5f + (0.5f * (float) properties.get("lDrive").getValue()),
-					0.5f - (0.5f * (float) properties.get("lDrive").getValue()), 1);
+		if (lDrive >= 0) {
+			lDriveColor = new Vector4f(0.5f - (0.5f * lDrive), 0.5f + (0.5f * lDrive), 0.5f - (0.5f * lDrive), 1);
 		} else {
-			lDriveColor = new Vector4f(0.5f - (0.5f * (float) properties.get("lDrive").getValue()),
-					0.5f + (0.5f * (float) properties.get("lDrive").getValue()),
-					0.5f + (0.5f * (float) properties.get("lDrive").getValue()), 1);
+			lDriveColor = new Vector4f(0.5f - (0.5f * lDrive), 0.5f + (0.5f * lDrive), 0.5f + (0.5f * lDrive), 1);
 		}
 	}
 

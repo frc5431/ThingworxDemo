@@ -3,11 +3,8 @@ package com.frc5431.thingworx.core;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-
-import javax.imageio.ImageIO;
 
 import com.jumbo.components.FloatRectangle;
 import com.jumbo.components.JumboColor;
@@ -25,6 +22,7 @@ import com.jumbo.entities.graphics.text.JumboText;
 import com.jumbo.entities.graphics.text.JumboTextBox;
 import com.jumbo.tools.JumboErrorHandler;
 import com.jumbo.tools.JumboSettings;
+import com.jumbo.tools.loaders.JumboImageHandler;
 
 public class Simulator {
 	static int MODE_ID;
@@ -133,11 +131,38 @@ public class Simulator {
 			l.addEntity(autoCameraButton);
 			l.addEntity(manualCameraButton);
 
+			final JumboImage watermark = new JumboImage(new JumboTexture("res/assets/logo.png"),
+					new Rectangle(0, 0, 357, 100)) {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				/*
+				 * (non-Javadoc)
+				 * 
+				 * @see
+				 * com.jumbo.core.JumboEntity#additionalCalculations(java.awt.
+				 * Rectangle)
+				 */
+				@Override
+				public Rectangle additionalCalculations(Rectangle bounds) {
+					bounds.x = Jumbo.getFrameWidth() - bounds.width;
+
+					return super.additionalCalculations(bounds);
+				}
+
+			};
+			watermark.setMaintainingPosition(true);
+			l.addEntity(watermark);
+
 			final JumboScene s = new JumboScene(l);
 			Jumbo.setScene(s);
 		});
+
 		final JumboLaunchConfig launch = new JumboLaunchConfig("FRC 5431", new Dimension(720, 480),
-				new BufferedImage[] { ImageIO.read(new File("res/assets/logo.png")) }, "res/fonts/verdana");
+				new BufferedImage[] { JumboImageHandler.getImage("res/assets/icon.png") }, "res/fonts/verdana");
 		launch.resizable = true;
 		Jumbo.start(launch);
 	}

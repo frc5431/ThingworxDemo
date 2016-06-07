@@ -46,7 +46,7 @@ public class RenderMode3D extends JumboRenderMode {
 	public static CAMERA_MODE mode = CAMERA_MODE.AUTO;
 
 	private Vector3f offset = new Vector3f(0, 0, 0), rotation = new Vector3f(0, 0, 0);
-	RawModel frame, rflywheel, lflywheel, rdrive, ldrive, intake, ball, arrow;
+	RawModel frame, rflywheel, lflywheel, rdrive, ldrive, intake, ball;
 
 	public RenderMode3D() throws Exception {
 
@@ -113,7 +113,6 @@ public class RenderMode3D extends JumboRenderMode {
 		ldrive = Loader.loadToVAO(OBJFileLoader.loadOBJ("robot-left-drive.obj"));
 		intake = Loader.loadToVAO(OBJFileLoader.loadOBJ("robot-intake.obj"));
 		ball = Loader.loadToVAO(OBJFileLoader.loadOBJ("ball.obj"));
-		arrow = Loader.loadToVAO(OBJFileLoader.loadOBJ("arrow-up.obj"));
 
 		Util.checkGLError();
 
@@ -127,7 +126,7 @@ public class RenderMode3D extends JumboRenderMode {
 
 	private final ShaderProgram prog;
 
-	private void render(RawModel d) {
+	private static void render(RawModel d) {
 		glBindVertexArray(d.getVaoID());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
@@ -169,9 +168,6 @@ public class RenderMode3D extends JumboRenderMode {
 			prog.setUniform("color", new Vector4f(0, 0, 0.5f, 1));
 			render(ball);
 		}
-
-		prog.setUniform("color", new Vector4f(0, 0, 0.5f, 1));
-		render(arrow);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);

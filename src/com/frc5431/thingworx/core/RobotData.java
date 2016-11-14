@@ -18,7 +18,7 @@ public class RobotData {
 	static double xangle = 0.0, yangle = 0.0, zangle = 0.0, leftrpm = 0.0, rightrpm = 0.0, ldistance = 0.0,
 			leftdrivepower = 0.0, rdistance = 0.0, rightdrivepower = 0.0, xaccel = 0.0, yaccel = 0.0, zaccel = 0.0,
 			choppers = 0.0, ballIn = 0.0, intake = 0.0, towerdistance = 0.0, fromcenter = 0.0, auton = 0.0,
-			teleop = 0.0, enabled = 0.0;
+			teleop = 0.0, enabled = 0.0, batteryLevel = 11.0;
 
 	static String timestamp = null, laststamp = " ";
 
@@ -124,6 +124,7 @@ public class RobotData {
 			rdistance = JD(got, "rdistance");
 			leftdrivepower = JD(got, "leftdrivepower");
 			rightdrivepower = JD(got, "rightdrivepower");
+			batteryLevel = JD(got, "battery");
 			choppers = JDBoolean(got, "choppers");
 			auton = JDBoolean(got, "auton");
 			teleop = JDBoolean(got, "teleop");
@@ -172,6 +173,7 @@ public class RobotData {
 				rdistance = JD(got, "rdistance");
 				leftdrivepower = JD(got, "leftdrivepower");
 				rightdrivepower = JD(got, "rightdrivepower");
+				batteryLevel = JD(got, "battery");
 				choppers = JD(got, "choppers");
 				auton = JD(got, "auton");
 				teleop = JD(got, "teleop");
@@ -236,6 +238,10 @@ public class RobotData {
 
 	public static int getIntake() {
 		return (int) intake;
+	}
+	
+	public static double getBattery() {
+		return batteryLevel;
 	}
 
 	public static double getTowerDistance() {

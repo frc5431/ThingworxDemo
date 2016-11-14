@@ -34,6 +34,7 @@ public class Properties {
 		properties.put("accelY", new Property(0));
 		properties.put("accelZ", new Property(0));
 		properties.put("towerdistance", new Property(0.0f));
+		properties.put("battery", new Property(0.0f));
 		properties.put("fromcenter", new Property(0.0f));
 
 		Jumbo.setCloseListener(() -> {
@@ -69,6 +70,7 @@ public class Properties {
 				properties.get("accelX").setValue(accel[0]);
 				properties.get("accelY").setValue(accel[1]);
 				properties.get("accelZ").setValue(accel[2]);
+				properties.get("battery").setValue((double) RobotData.getBattery());
 				properties.get("ballIn").setValue((boolean) RobotData.isBallIn());
 				properties.get("intake").setValue((int) RobotData.getIntake());
 				properties.get("towerdistance").setValue((float) RobotData.getTowerDistance());

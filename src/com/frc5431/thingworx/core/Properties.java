@@ -34,7 +34,7 @@ public class Properties {
 		properties.put("accelY", new Property(0));
 		properties.put("accelZ", new Property(0));
 		properties.put("towerdistance", new Property(0.0f));
-		properties.put("battery", new Property(0.0f));
+		properties.put("battery", new Property(0.0));
 		properties.put("fromcenter", new Property(0.0f));
 
 		Jumbo.setCloseListener(() -> {
@@ -125,7 +125,7 @@ public class Properties {
 			GREEN = new Vector4f(0, 1, 0, 1), BLACK = new Vector4f(0, 0, 0, 1),
 			GREY = new Vector4f(0.5f, 0.5f, 0.5f, 1);
 
-	public static Vector4f rDriveColor, lDriveColor, rFlywheelColor = WHITE, lFlywheelColor = WHITE, intakeColor;
+	public static Vector4f rDriveColor, lDriveColor, rFlywheelColor = WHITE, lFlywheelColor = WHITE, intakeColor, batteryColor;
 
 	// public static final boolean CHEAT_MODE = true;
 
@@ -202,6 +202,11 @@ public class Properties {
 		} else {
 			lDriveColor = new Vector4f(0.5f - (0.5f * lDrive), 0.5f + (0.5f * lDrive), 0.5f + (0.5f * lDrive), 1);
 		}
+		
+		final double batteryLevel =  (double) properties.get("battery").getValue();
+		final double batteryDifference = batteryLevel-7.0;
+		batteryColor = new Vector4f(1.0f - (float)batteryDifference/6.0f, ((float)batteryDifference/6.0f),0.0f,1.0f);
+		
 	}
 
 }

@@ -46,7 +46,7 @@ public class RenderMode3D extends JumboRenderMode {
 	public static CAMERA_MODE mode = CAMERA_MODE.AUTO;
 
 	private Vector3f offset = new Vector3f(0, 0, 0), rotation = new Vector3f(0, 0, 0);
-	RawModel frame, rflywheel, lflywheel, rdrive, ldrive, intake, ball;
+	RawModel frame, rflywheel, lflywheel, rdrive, ldrive, intake, ball, battery;
 
 	public RenderMode3D() throws Exception {
 
@@ -113,6 +113,7 @@ public class RenderMode3D extends JumboRenderMode {
 		ldrive = Loader.loadToVAO(OBJFileLoader.loadOBJ("robot-left-drive.obj"));
 		intake = Loader.loadToVAO(OBJFileLoader.loadOBJ("robot-intake.obj"));
 		ball = Loader.loadToVAO(OBJFileLoader.loadOBJ("ball.obj"));
+		battery = Loader.loadToVAO(OBJFileLoader.loadOBJ("battery.obj"));
 
 		Util.checkGLError();
 
@@ -163,6 +164,9 @@ public class RenderMode3D extends JumboRenderMode {
 
 		prog.setUniform("color", Properties.lFlywheelColor);
 		render(lflywheel);
+		
+		prog.setUniform("color", Properties.batteryColor);
+		render(battery);
 
 		if ((boolean) Properties.properties.get("ballIn").getValue()) {
 			prog.setUniform("color", new Vector4f(0, 0, 0.5f, 1));

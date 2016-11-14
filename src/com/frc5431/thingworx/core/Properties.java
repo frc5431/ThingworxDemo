@@ -127,6 +127,10 @@ public class Properties {
 
 	public static Vector4f rDriveColor, lDriveColor, rFlywheelColor = WHITE, lFlywheelColor = WHITE, intakeColor, batteryColor;
 
+	public static float linearMap(double current, double in_min, double in_max, double out_min, double out_max) {
+	   return (float) ((current - in_min) * (out_max - out_min) / (in_max - in_min) + out_min); 
+	}
+	
 	// public static final boolean CHEAT_MODE = true;
 
 	public static void update() {
@@ -204,8 +208,8 @@ public class Properties {
 		}
 		
 		final double batteryLevel =  (double) properties.get("battery").getValue();
-		final double batteryDifference = batteryLevel-7.0;
-		batteryColor = new Vector4f(1.0f - (float)batteryDifference/6.0f, ((float)batteryDifference/6.0f),0.0f,1.0f);
+		final double colorComponent = (batteryLevel - 7.0) / 5.0;
+		batteryColor = new Vector4f(1.0f - (float)colorComponent, (float)colorComponent,0.0f,1.0f);
 		
 	}
 

@@ -92,7 +92,7 @@ class JumboDisplayManager {
 				Display.setVSyncEnabled(true);
 			}
 			if (!Display.isCreated()) {
-				final PixelFormat pixelFormat = new PixelFormat();
+				final PixelFormat pixelFormat = new PixelFormat().withDepthBits(24);
 				final ContextAttribs contextAtrributes = new ContextAttribs(3, 3).withProfileCompatibility(true);
 				Display.create(pixelFormat, contextAtrributes);
 			}

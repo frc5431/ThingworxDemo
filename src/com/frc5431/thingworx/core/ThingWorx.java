@@ -6,24 +6,24 @@ import java.security.cert.Certificate;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
-import com.frc5431.thingworx.json.Json;
-import com.frc5431.thingworx.json.JsonArray;
-import com.frc5431.thingworx.json.JsonObject;
+import org.json.Json;
+import org.json.JsonArray;
+import org.json.JsonObject;
+
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
 
 public class ThingWorx {
 
 	private HttpsURLConnection connection = null;
-	private final String baseUrl = "https://thingx-bhulse.rd1.thingworx.io/Thingworx",
-			appKey = "4cb289bd-4cd3-4a0b-a635-bc189290c4e9", // "e5ced0ce-637f-4b33-a4d3-cc3597af0b71",
-			userName = "bhulse", userPass = "wmv7a5yr";
+	private final String baseUrl = "https://gj6mbgz0.pp.vuforia.io:8443/Thingworx",
+			userName = "first", userPass = "Rob0t1cs";
 
-	private String selected_thing = "robot3Helper";
+	private String selected_thing = "academyRobot";
 
 	private final String[] header_h = { "Connection", "X-Requested-With", "Content-Type", "DNT", "Accept-Encoding",
-			"appKey", "Accept" },
-			header_b = { "keep-alive", "XMLHttpRequest", "application/json", "1", "gzip, deflate", appKey,
+			"Accept" },
+			header_b = { "keep-alive", "XMLHttpRequest", "application/json", "1", "gzip, deflate",
 					"application/json, application/json-compressed, text/javascript, */*, q=0.01" };
 
 	public ThingWorx() {

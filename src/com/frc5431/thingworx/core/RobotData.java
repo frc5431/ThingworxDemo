@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.json.JsonObject;
+import org.json.JSONObject;
 
 
 public class RobotData {
@@ -38,16 +38,16 @@ public class RobotData {
 		return toDigit(set.getString(toGrab));
 	}
 
-	public static double JD(JsonObject got, String toGrab) {
+	public static double JD(JSONObject got, String toGrab) {
 		try {
-			return toDigit(got.get(toGrab).asString());
+			return toDigit(got.getString(toGrab));
 		} catch (NullPointerException err) {
 			return 0.0;
 		}
 	}
 
-	public static double JDBoolean(JsonObject got, String toGrab) {
-		return Boolean.parseBoolean(got.get(toGrab).asString()) ? 1.0 : 0.0;
+	public static double JDBoolean(JSONObject got, String toGrab) {
+		return Boolean.parseBoolean(got.getString(toGrab)) ? 1.0 : 0.0;
 	}
 
 	public static void closeDB() {
@@ -106,9 +106,9 @@ public class RobotData {
 					sqlerr.printStackTrace();
 				}
 			}
-			JsonObject got = worx.get_property();
+			JSONObject got = worx.get_property();
 			try { 
-			timestamp = got.get("timestamp").asString();
+			timestamp = got.getString("timestamp");
 			} catch(Exception err) {}
 			updating = (timestamp != laststamp);
 			laststamp = timestamp;

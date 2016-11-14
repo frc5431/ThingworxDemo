@@ -6,9 +6,8 @@ import java.security.cert.Certificate;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
-import org.json.Json;
-import org.json.JsonArray;
-import org.json.JsonObject;
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
@@ -65,15 +64,15 @@ public class ThingWorx {
 		return request("PUT", props_path, JSON);
 	}
 
-	public JsonObject get_property() throws Exception {
+	public JSONObject get_property() throws Exception {
 		try {
 			final String props_path = baseUrl + "/Things/" + selected_thing + "/Properties/";
 			System.out.println("GETTING STUFF: " + String.valueOf(props_path));
 			String returned = request("GET", props_path, "");
 			System.out.println("Got response " + returned + " From " + props_path);
-			JsonObject total = Json.parse(returned).asObject();
-			JsonArray rows = total.get("rows").asArray();
-			return rows.get(0).asObject();
+			JSONObject total = new JSONObject(returned);
+			JSONArray rows = total.getJSONArray("rows");
+			return (JSONObject) rows.get(0);
 
 		} catch (Throwable t) {
 			// ignored

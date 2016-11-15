@@ -1,24 +1,19 @@
 package com.frc5431.thingworx.core;
 
-import java.io.IOException;
-import java.security.cert.Certificate;
-
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLPeerUnverifiedException;
 
-import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
-import com.mashape.unirest.request.HttpRequestWithBody;
 
 public class ThingWorx {
 
 	private HttpsURLConnection connection = null;
 	private static final String baseUrl = "https://gj6mbgz0.pp.vuforia.io:8443/Thingworx",
 			userName = "first", userPass = "Rob0t1cs", selected_thing = "academyRobot";
-	private static final boolean printStuff = true; 
+	private static final boolean printStuff = false; 
 	private static final String[] header_h = { "Connection", "X-Requested-With", "Content-Type", "DNT", "Accept-Encoding",
 			"Accept" },
 			header_b = { "keep-alive", "XMLHttpRequest", "application/json", "1", "gzip, deflate",
@@ -63,7 +58,7 @@ public class ThingWorx {
 		props_path = baseUrl + "/Things/" + selected_thing + "/Properties";
 	}
 
-	public String put_property(String JSON) throws Exception {
+	public JSONObject put_property(String JSON) throws Exception {
 		if(printStuff) System.out.println("Sending " + JSON + " To: " + props_path);
 		return request("PUT", props_path, JSON);
 	}
@@ -72,11 +67,11 @@ public class ThingWorx {
 		try {
 			//final String props_path = baseUrl + "/Things/" + selected_thing + "/Properties/";
 			//System.out.println("GETTING STUFF: " + String.valueOf(props_path));
-			String returned = request("GET", props_path, "");
+			JSONObject returned = request("GET", props_path, "");
 			if(printStuff)
-				System.out.println("Got response " + returned + " From " + props_path);
-			JSONObject total = new JSONObject(returned);
-			JSONArray rows = total.getJSONArray("rows");
+				System.out.println("Got response " + returned.toString() + " From " + props_path);
+			//JSONObject total = new JSONObject(returned);
+			JSONArray rows = returned.getJSONArray("rows");
 			return (JSONObject) rows.get(0);
 
 		} catch (Throwable t) {
@@ -88,7 +83,6 @@ public class ThingWorx {
 	private JSONObject request(String type, String targetURL, String urlParameters) {
 
 		try {
-			HttpRequestWithBody put = Unirest.put(targetURL);
 			GetRequest request = Unirest.get(targetURL);
 			for (int ind = 0; ind < header_h.length; ind++) {
 				request.header(header_h[ind], header_b[ind]);
@@ -96,9 +90,9 @@ public class ThingWorx {
 			request.basicAuth(userName, userPass);
 			return request.asJson().getBody().getObject();
 		} catch (Exception e) {
+			e.printStackTrace();
 			if(printStuff) {
 				System.out.println("Failed request!");
-				e.printStackTrace();
 			}
 			return null;
 		} finally {
@@ -107,5 +101,4 @@ public class ThingWorx {
 			}
 		}
 	}
-
 }

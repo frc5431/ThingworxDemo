@@ -33,6 +33,8 @@ public class RenderMode3D extends JumboRenderMode {
 
 	int vboId, vaoId, idxVboId;
 
+	final Matrix4f modelMatrix = (Matrix4f) new Matrix4f().setIdentity();
+	
 	private static final float FOV = 70;
 
 	private static final float Z_NEAR = 0.01f;
@@ -60,6 +62,7 @@ public class RenderMode3D extends JumboRenderMode {
 		prog.bind();
 
 		prog.createUniform("projectionMatrix");
+		prog.createUniform("modelMatrix");
 
 		prog.createUniform("worldMatrix");
 		prog.setUniform("worldMatrix", new Matrix4f().translate(new Vector3f(0.6f, -1.8f, -44.5f)));
@@ -223,11 +226,22 @@ public class RenderMode3D extends JumboRenderMode {
 			} else if (JumboInputHandler.wheel < 0) {
 				offset.setZ(offset.getZ() - MOVE_SPEED * 5);
 			}
+			if(JumboInputHandler.isKeyDown(JumboKey.L)){
+				offset.setX(offset.getX() + MOVE_SPEED);
+			}
+			if(JumboInputHandler.isKeyDown(JumboKey.J)){
+				offset.setX(offset.getX() - MOVE_SPEED);
+			}
+			if(JumboInputHandler.isKeyDown(JumboKey.K)){
+				offset.setY(offset.getY() - MOVE_SPEED);
+			}
+			if(JumboInputHandler.isKeyDown(JumboKey.I)){
+				offset.setY(offset.getY() + MOVE_SPEED);
+			}
 		} else {
-			rotation.y += MOVE_SPEED / 2;
 			offset.y = -6;
 			rotation.x = 50;
-			offset.z = -8;
+			offset.z = -40;
 		}
 
 		final Matrix4f worldMatrix = (Matrix4f) new Matrix4f().setIdentity();
@@ -236,6 +250,8 @@ public class RenderMode3D extends JumboRenderMode {
 		Matrix4f.rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0), worldMatrix, worldMatrix);
 		Matrix4f.rotate((float) Math.toRadians(rotation.z), new Vector3f(0, 0, 1), worldMatrix, worldMatrix);
 
+		
+		prog.setUniform("modelMatrix", modelMatrix);
 		prog.setUniform("viewMatrix", worldMatrix);
 		prog.setUniform("color", new Vector4f(1, 1, 1, 1));
 
@@ -255,7 +271,7 @@ public class RenderMode3D extends JumboRenderMode {
 	public void init() {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 
-		// GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+		//GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		glEnable(GL_BLEND);

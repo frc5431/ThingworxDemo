@@ -11,12 +11,13 @@ uniform vec3 lightPosition;
 uniform mat4 worldMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
+uniform mat4 modelMatrix;
 
 void main()
 {
 	vec4 mvPos = viewMatrix * vec4(position, 1.0);
-    gl_Position = projectionMatrix *worldMatrix* mvPos;	
+    gl_Position = projectionMatrix * modelMatrix * worldMatrix* mvPos;	
 	
 	surfaceNormal = (worldMatrix*vec4(normal,0.0)).xyz;
-	toLightVector= lightPosition-mvPos.xyz;
+	toLightVector= (worldMatrix*vec4(lightPosition,0.0)).xyz-mvPos.xyz;
 }

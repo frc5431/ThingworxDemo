@@ -11,25 +11,26 @@ import org.json.JSONArray;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
+import com.mashape.unirest.request.HttpRequestWithBody;
 
 public class ThingWorx {
 
 	private HttpsURLConnection connection = null;
-	private final String baseUrl = "https://gj6mbgz0.pp.vuforia.io:8443/Thingworx",
-			userName = "first", userPass = "Rob0t1cs";
-
-	private String selected_thing = "academyRobot";
-
-	private final String[] header_h = { "Connection", "X-Requested-With", "Content-Type", "DNT", "Accept-Encoding",
+	private static final String baseUrl = "https://gj6mbgz0.pp.vuforia.io:8443/Thingworx",
+			userName = "first", userPass = "Rob0t1cs", selected_thing = "academyRobot";
+	private static final boolean printStuff = true; 
+	private static final String[] header_h = { "Connection", "X-Requested-With", "Content-Type", "DNT", "Accept-Encoding",
 			"Accept" },
 			header_b = { "keep-alive", "XMLHttpRequest", "application/json", "1", "gzip, deflate",
 					"application/json, application/json-compressed, text/javascript, */*, q=0.01" };
 
+	private String props_path = "";
+	
 	public ThingWorx() {
-
+		setThing(); //Sets the properties thing path
 	}
 
-	private void print_https_cert(HttpsURLConnection con) {
+	/*private void print_https_cert(HttpsURLConnection con) {
 
 		if (con != null) {
 
@@ -56,20 +57,24 @@ public class ThingWorx {
 
 		}
 
+	}*/
+	
+	public void setThing() {
+		props_path = baseUrl + "/Things/" + selected_thing + "/Properties";
 	}
 
 	public String put_property(String JSON) throws Exception {
-		final String props_path = baseUrl + "/Things/" + selected_thing + "/Properties/*";
-		System.out.println("Sending " + JSON + " To: " + props_path);
+		if(printStuff) System.out.println("Sending " + JSON + " To: " + props_path);
 		return request("PUT", props_path, JSON);
 	}
 
 	public JSONObject get_property() throws Exception {
 		try {
-			final String props_path = baseUrl + "/Things/" + selected_thing + "/Properties/";
-			System.out.println("GETTING STUFF: " + String.valueOf(props_path));
+			//final String props_path = baseUrl + "/Things/" + selected_thing + "/Properties/";
+			//System.out.println("GETTING STUFF: " + String.valueOf(props_path));
 			String returned = request("GET", props_path, "");
-			System.out.println("Got response " + returned + " From " + props_path);
+			if(printStuff)
+				System.out.println("Got response " + returned + " From " + props_path);
 			JSONObject total = new JSONObject(returned);
 			JSONArray rows = total.getJSONArray("rows");
 			return (JSONObject) rows.get(0);
@@ -80,39 +85,21 @@ public class ThingWorx {
 		return null;
 	}
 
-	private String request(String type, String targetURL, String urlParameters) {
+	private JSONObject request(String type, String targetURL, String urlParameters) {
 
 		try {
+			HttpRequestWithBody put = Unirest.put(targetURL);
 			GetRequest request = Unirest.get(targetURL);
 			for (int ind = 0; ind < header_h.length; ind++) {
 				request.header(header_h[ind], header_b[ind]);
 			}
 			request.basicAuth(userName, userPass);
-			return request.asJson().getBody().getObject().toString();
-			/*
-			 * URL url = new URL(targetURL); connection = (HttpsURLConnection)
-			 * url.openConnection(); // print_https_cert(connection);
-			 * connection.setRequestMethod(type); final String userpass =
-			 * userName + ":" + userPass; final String auth = "Basic " + new
-			 * String(Base64.getEncoder().encode(userpass.getBytes()));
-			 * connection.setRequestProperty("Authorization", auth);
-			 * connection.setRequestProperty("Content-Length",
-			 * Integer.toString(urlParameters.getBytes().length)); for (int ind
-			 * = 0; ind < header_h.length; ind++) {
-			 * connection.setRequestProperty(header_h[ind], header_b[ind]); }
-			 * connection.setUseCaches(false); connection.setDoOutput(true); if
-			 * (type == "PUT") { DataOutputStream wr = new
-			 * DataOutputStream(connection.getOutputStream());
-			 * wr.writeBytes(urlParameters); wr.close(); } InputStream is =
-			 * connection.getInputStream(); BufferedReader rd = new
-			 * BufferedReader(new InputStreamReader(is)); StringBuilder response
-			 * = new StringBuilder(); // or StringBuffer if // not Java 5+
-			 * String line; while ((line = rd.readLine()) != null) {
-			 * response.append(line); response.append('\r'); } rd.close();
-			 * return response.toString();
-			 */
+			return request.asJson().getBody().getObject();
 		} catch (Exception e) {
-			e.printStackTrace();
+			if(printStuff) {
+				System.out.println("Failed request!");
+				e.printStackTrace();
+			}
 			return null;
 		} finally {
 			if (connection != null) {

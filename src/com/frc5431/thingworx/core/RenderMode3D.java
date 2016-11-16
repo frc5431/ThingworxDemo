@@ -33,7 +33,10 @@ public class RenderMode3D extends JumboRenderMode {
 
 	int vboId, vaoId, idxVboId;
 
-	final Matrix4f modelMatrix = (Matrix4f) new Matrix4f().setIdentity();
+	Matrix4f modelMatrix = (Matrix4f) new Matrix4f().setIdentity();
+	
+	final Vector3f modelTranslation = new Vector3f();
+	final Vector3f modelRotation = new Vector3f();
 	
 	private static final float FOV = 70;
 
@@ -47,8 +50,8 @@ public class RenderMode3D extends JumboRenderMode {
 
 	public static CAMERA_MODE mode = CAMERA_MODE.AUTO;
 
-	private Vector3f offset = new Vector3f(0, 0, 0), rotation = new Vector3f(0, 0, 0);
-	RawModel frame, rflywheel, lflywheel, rdrive, ldrive, intake, ball, battery;
+	private Vector3f offset = new Vector3f(0, 0, 0), rotation = new Vector3f(0, 0, 0), scale = new Vector3f(1,1,1);
+	RawModel frame, rflywheel, lflywheel, rdrive, ldrive, intake, ball, battery, floor;
 
 	public RenderMode3D() throws Exception {
 
@@ -117,6 +120,7 @@ public class RenderMode3D extends JumboRenderMode {
 		intake = Loader.loadToVAO(OBJFileLoader.loadOBJ("robot-intake.obj"));
 		ball = Loader.loadToVAO(OBJFileLoader.loadOBJ("ball.obj"));
 		battery = Loader.loadToVAO(OBJFileLoader.loadOBJ("battery.obj"));
+		floor = Loader.loadToVAO(OBJFileLoader.loadOBJ("floor.obj"));
 
 		Util.checkGLError();
 
@@ -149,6 +153,31 @@ public class RenderMode3D extends JumboRenderMode {
 	public void render(JumboGraphicsObject e, int renderwidth, int renderheight) {
 
 		Util.checkGLError();
+		
+		prog.setUniform("modelMatrix", (Matrix4f) new Matrix4f().setIdentity());
+		
+		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+		prog.setUniform("color", new Vector4f(0f,0.5f,0f,1f));
+		render(floor);
+		
+		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+		prog.setUniform("color", new Vector4f(0.1f,0.7f,0.1f,1f));
+		render(floor);
+		
+		final double[] gyro = RobotData.getRobotGyro();
+		modelRotation.y = (float) gyro[1];
+		
+		final double[] distance = RobotData.getRobotDistance();
+		modelTranslation.x = (float) distance[0];
+		modelTranslation.z = (float) distance[2];
+				
+		modelMatrix = (Matrix4f) modelMatrix.setIdentity();
+		modelMatrix.translate(modelTranslation);
+		modelMatrix.rotate((float) Math.toRadians(modelRotation.x), new Vector3f(1,0,0));
+		modelMatrix.rotate((float) Math.toRadians(modelRotation.y), new Vector3f(0,1,0));
+		modelMatrix.rotate((float) Math.toRadians(modelRotation.z), new Vector3f(0,0,1));
+		
+		prog.setUniform("modelMatrix", modelMatrix);
 
 		prog.setUniform("color", Properties.WHITE);
 		render(frame);
@@ -198,6 +227,8 @@ public class RenderMode3D extends JumboRenderMode {
 	public void prepare() {
 		GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 		prog.bind();
+		
+		final Matrix4f worldMatrix = (Matrix4f) new Matrix4f().setIdentity();
 
 		final float MOVE_SPEED = 0.5f;
 
@@ -221,37 +252,45 @@ public class RenderMode3D extends JumboRenderMode {
 			if (JumboInputHandler.isKeyDown(JumboKey.E)) {
 				rotation.setZ(rotation.getZ() - MOVE_SPEED);
 			}
-			if (JumboInputHandler.wheel > 0) {
-				offset.setZ(offset.getZ() + MOVE_SPEED * 5);
-			} else if (JumboInputHandler.wheel < 0) {
-				offset.setZ(offset.getZ() - MOVE_SPEED * 5);
+			
+			if (JumboInputHandler.wheel > 0&&scale.x<4) {
+				scale.translate(MOVE_SPEED/10.f, MOVE_SPEED/10.f, MOVE_SPEED/10.f);
+			} else if (JumboInputHandler.wheel < 0&&scale.x>0.3) {
+				scale.translate(-MOVE_SPEED/10.f, -MOVE_SPEED/10.f, -MOVE_SPEED/10.f);
 			}
+			
 			if(JumboInputHandler.isKeyDown(JumboKey.L)){
-				offset.setX(offset.getX() + MOVE_SPEED);
-			}
-			if(JumboInputHandler.isKeyDown(JumboKey.J)){
 				offset.setX(offset.getX() - MOVE_SPEED);
 			}
-			if(JumboInputHandler.isKeyDown(JumboKey.K)){
-				offset.setY(offset.getY() - MOVE_SPEED);
+			if(JumboInputHandler.isKeyDown(JumboKey.J)){
+				offset.setX(offset.getX() + MOVE_SPEED);
 			}
-			if(JumboInputHandler.isKeyDown(JumboKey.I)){
+			if(JumboInputHandler.isKeyDown(JumboKey.K)){
 				offset.setY(offset.getY() + MOVE_SPEED);
 			}
+			if(JumboInputHandler.isKeyDown(JumboKey.I)){
+				offset.setY(offset.getY() - MOVE_SPEED);
+			}
 		} else {
-			offset.y = -6;
-			rotation.x = 50;
-			offset.z = -40;
+			offset.y = -13;
+			offset.z = -75;
+			offset.x = 0;
+			
+			scale.x = 0.1f;
+			scale.y = 0.1f;
+			scale.z = 0.1f;
+			
+			rotation.x = 90;
+			rotation.y = 0;
+			rotation.z = 0;
 		}
-
-		final Matrix4f worldMatrix = (Matrix4f) new Matrix4f().setIdentity();
+		
 		worldMatrix.translate(offset);
 		Matrix4f.rotate((float) Math.toRadians(rotation.x), new Vector3f(1, 0, 0), worldMatrix, worldMatrix);
 		Matrix4f.rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0), worldMatrix, worldMatrix);
 		Matrix4f.rotate((float) Math.toRadians(rotation.z), new Vector3f(0, 0, 1), worldMatrix, worldMatrix);
-
+		worldMatrix.scale(scale);
 		
-		prog.setUniform("modelMatrix", modelMatrix);
 		prog.setUniform("viewMatrix", worldMatrix);
 		prog.setUniform("color", new Vector4f(1, 1, 1, 1));
 

@@ -15,9 +15,9 @@ uniform mat4 modelMatrix;
 
 void main()
 {
-	vec4 mvPos = viewMatrix * vec4(position, 1.0);
-    gl_Position = projectionMatrix * modelMatrix * worldMatrix* mvPos;	
+	vec4 mvPos = viewMatrix * worldMatrix * modelMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix  * viewMatrix * worldMatrix * modelMatrix * vec4(position, 1.0);
 	
 	surfaceNormal = (worldMatrix*vec4(normal,0.0)).xyz;
-	toLightVector= (worldMatrix*vec4(lightPosition,0.0)).xyz-mvPos.xyz;
+	toLightVector= (vec4(lightPosition,0.0)).xyz-mvPos.xyz;
 }
